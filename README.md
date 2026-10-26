@@ -20,14 +20,14 @@ Clean junk, find what's eating your disk, tame startup apps and keep an eye on y
 
 ## Status
 
-**Current version: 1.1.0** — runs on Windows 10 and 11 (x64).
+**Current version: 1.0.0** — runs on Windows 10 and 11 (x64).
 
-What's new in 1.1:
+Highlights:
 
-- **Brand-new look** — a bolder, friendlier design with crisp "printed card" surfaces and bundled Fraunces + Inter typefaces.
+- **Bold, friendly design** with crisp "printed card" surfaces and bundled Fraunces + Inter typefaces.
 - **Light and dark mode** — follows your Windows app theme on first run; flip it any time with the sun/moon button in the title bar. Your choice is remembered.
-- **Refreshed Smart Care home** with live CPU, memory, storage and system tiles.
-- New high-resolution app icon.
+- **Smart Care home** with live CPU, memory, storage and system tiles.
+- **Installer with automatic updates** — Whitebox checks for a new version once a day and updates in one click.
 
 Every feature listed below is implemented. Builds are not code-signed yet (see the SmartScreen note under Download).
 

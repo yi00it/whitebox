@@ -45,8 +45,8 @@ Use the issue templates and include your Whitebox version (shown at the bottom o
 Bump nothing by hand. Tag and push:
 
 ```powershell
-git tag v1.1.0
-git push origin v1.1.0
+git tag v1.0.1
+git push origin v1.0.1
 ```
 
-The Release workflow builds both executables, writes `SHA256SUMS.txt` and publishes a GitHub Release with generated notes. The version shown in the app comes from the tag.
+The Release workflow builds the installer, writes `SHA256SUMS.txt` and publishes a GitHub Release with generated notes. The version shown in the app comes from the tag. Installed copies offer the new release as an update within a day, so the tag must be higher than the previous release.

@@ -1,6 +1,6 @@
 ; Inno Setup script for Whitebox. Requires Inno Setup 6.3 or later.
 ; Build with installer\build.ps1, or directly:
-;   ISCC.exe /DAppVersion=1.1.0 /DSourceExe=path\to\Whitebox.exe installer\Whitebox.iss
+;   ISCC.exe /DAppVersion=1.0.0 /DSourceExe=path\to\Whitebox.exe installer\Whitebox.iss
 
 #define AppName "Whitebox"
 #define AppExe "Whitebox.exe"
