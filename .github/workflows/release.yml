@@ -32,6 +32,13 @@ jobs:
           New-Item -ItemType Directory dist | Out-Null
           Copy-Item out/standalone/Whitebox.exe "dist/Whitebox-$version-win-x64.exe"
           Compress-Archive out/small/Whitebox.exe "dist/Whitebox-$version-win-x64-requires-dotnet10.zip"
+
+          # Installer: wraps the standalone exe; adds Start menu entry and an uninstaller.
+          $iscc = "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe"
+          if (-not (Test-Path $iscc)) { choco install innosetup -y --no-progress }
+          & $iscc "/DAppVersion=$version" "/DSourceExe=$PWD\out\standalone\Whitebox.exe" installer/Whitebox.iss
+          if ($LASTEXITCODE) { throw 'ISCC failed' }
+
           Get-ChildItem dist | ForEach-Object {
             $hash = (Get-FileHash $_.FullName -Algorithm SHA256).Hash.ToLower()
             "$hash  $($_.Name)" | Add-Content dist/SHA256SUMS.txt

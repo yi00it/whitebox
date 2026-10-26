@@ -62,7 +62,8 @@ Every feature listed below is implemented. Builds are not code-signed yet (see t
 ## Download & install
 
 1. Go to the [latest release](https://github.com/yi00it/whitebox/releases/latest).
-2. Download **`Whitebox-x.y.z-win-x64.exe`**. It's a single file with nothing to install, and it runs on any 64-bit Windows 10 or 11 PC.
+2. Download **`Whitebox-x.y.z-win-x64-setup.exe`** to install Whitebox like any other app: it adds a Start menu entry and shows up in **Installed apps**, where you can uninstall it. No admin rights needed.
+   - Prefer a portable app? Grab **`Whitebox-x.y.z-win-x64.exe`** instead. It's a single file with nothing to install, and it runs on any 64-bit Windows 10 or 11 PC.
    - Already have the [.NET 10 Desktop Runtime](https://dotnet.microsoft.com/download/dotnet/10.0)? Grab the much smaller `…-requires-dotnet10.zip` instead.
 3. Double-click to run.
 
@@ -101,6 +102,14 @@ Release build (single file):
 dotnet publish -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true `
   -p:IncludeNativeLibrariesForSelfExtract=true -p:EnableCompressionInSingleFile=true -o publish
 ```
+
+Installer (needs [Inno Setup 6](https://jrsoftware.org/isinfo.php), e.g. `winget install JRSoftware.InnoSetup`):
+
+```powershell
+.\installer\build.ps1
+```
+
+This writes `dist\Whitebox-x.y.z-win-x64-setup.exe`.
 
 ### Project layout
 
