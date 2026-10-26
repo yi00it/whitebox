@@ -24,38 +24,38 @@
 
         <!-- Charts -->
         <UniformGrid Grid.Row="1" Columns="3" Height="196">
-            <Border Style="{StaticResource Card}" Margin="0,0,9,0" Padding="20,18">
+            <c:Surface Style="{StaticResource Card}" Margin="0,0,9,0" Padding="20,18">
                 <DockPanel>
                     <DockPanel DockPanel.Dock="Top">
-                        <TextBlock DockPanel.Dock="Right" Text="{Binding Monitor.CpuText}" Style="{StaticResource H2}" FontSize="22" Foreground="#FF8A65" />
+                        <TextBlock DockPanel.Dock="Right" Text="{Binding Monitor.CpuText}" Style="{StaticResource H2}" FontSize="26" FontWeight="Black" />
                         <StackPanel>
                             <TextBlock Text="CPU" Style="{StaticResource Caption}" />
                             <TextBlock Text="{Binding CpuName}" Style="{StaticResource Sub}" FontSize="11.5" Margin="0,2,12,0" />
                         </StackPanel>
                     </DockPanel>
-                    <c:Sparkline Values="{Binding Monitor.CpuHistory}" Maximum="100" Stroke="#FF7A55" Fill="{StaticResource FillOrange}" Margin="0,14,0,0" />
+                    <c:Sparkline Values="{Binding Monitor.CpuHistory}" Maximum="100" Stroke="{DynamicResource Ink}" Fill="{StaticResource FillOrange}" Margin="0,14,0,0" />
                 </DockPanel>
-            </Border>
-            <Border Style="{StaticResource Card}" Margin="3,0,6,0" Padding="20,18">
+            </c:Surface>
+            <c:Surface Style="{StaticResource Card}" Margin="3,0,6,0" Padding="20,18">
                 <DockPanel>
                     <DockPanel DockPanel.Dock="Top">
-                        <TextBlock DockPanel.Dock="Right" Text="{Binding Monitor.RamPercent, StringFormat={}{0:0}%}" Style="{StaticResource H2}" FontSize="22" Foreground="#A48CFF" />
+                        <TextBlock DockPanel.Dock="Right" Text="{Binding Monitor.RamPercent, StringFormat={}{0:0}%}" Style="{StaticResource H2}" FontSize="26" FontWeight="Black" />
                         <StackPanel>
                             <TextBlock Text="MEMORY" Style="{StaticResource Caption}" />
                             <TextBlock Text="{Binding Monitor.RamText}" Style="{StaticResource Sub}" FontSize="11.5" Margin="0,2,12,0" />
                         </StackPanel>
                     </DockPanel>
-                    <c:Sparkline Values="{Binding Monitor.RamHistory}" Maximum="100" Stroke="#8B6CFF" Fill="{StaticResource FillPurple}" Margin="0,14,0,0" />
+                    <c:Sparkline Values="{Binding Monitor.RamHistory}" Maximum="100" Stroke="{DynamicResource Ink}" Fill="{StaticResource FillPurple}" Margin="0,14,0,0" />
                 </DockPanel>
-            </Border>
-            <Border Style="{StaticResource Card}" Margin="9,0,0,0" Padding="20,18">
+            </c:Surface>
+            <c:Surface Style="{StaticResource Card}" Margin="9,0,0,0" Padding="20,18">
                 <DockPanel>
                     <DockPanel DockPanel.Dock="Top">
                         <StackPanel DockPanel.Dock="Right" HorizontalAlignment="Right">
-                            <TextBlock HorizontalAlignment="Right" FontSize="13" FontWeight="SemiBold" Foreground="{StaticResource Accent2}">
+                            <TextBlock HorizontalAlignment="Right" FontSize="13" FontWeight="Bold" Foreground="{DynamicResource Ink}">
                                 <Run Text="↓" /> <Run Text="{Binding Monitor.DownText, Mode=OneWay}" />
                             </TextBlock>
-                            <TextBlock HorizontalAlignment="Right" FontSize="13" FontWeight="SemiBold" Foreground="{StaticResource Success}">
+                            <TextBlock HorizontalAlignment="Right" FontSize="13" FontWeight="Bold" Foreground="{DynamicResource Danger}">
                                 <Run Text="↑" /> <Run Text="{Binding Monitor.UpText, Mode=OneWay}" />
                             </TextBlock>
                         </StackPanel>
@@ -65,15 +65,15 @@
                         </StackPanel>
                     </DockPanel>
                     <Grid Margin="0,10,0,0">
-                        <c:Sparkline Values="{Binding Monitor.DownHistory}" Stroke="#36C9FF" Fill="{StaticResource FillBlue}" />
-                        <c:Sparkline Values="{Binding Monitor.UpHistory}" Stroke="#2FE0A5" />
+                        <c:Sparkline Values="{Binding Monitor.DownHistory}" Stroke="{DynamicResource Ink}" Fill="{StaticResource FillBlue}" />
+                        <c:Sparkline Values="{Binding Monitor.UpHistory}" Stroke="{DynamicResource Danger}" />
                     </Grid>
                 </DockPanel>
-            </Border>
+            </c:Surface>
         </UniformGrid>
 
         <!-- Processes -->
-        <Border Grid.Row="2" Style="{StaticResource Card}" Margin="0,18,0,0" Padding="10,16,6,10">
+        <c:Surface Grid.Row="2" Style="{StaticResource Card}" Margin="0,18,0,0" Padding="10,16,6,10">
             <DockPanel>
                 <DockPanel DockPanel.Dock="Top" Margin="12,0,14,12">
                     <StackPanel DockPanel.Dock="Left" VerticalAlignment="Center">
@@ -123,20 +123,20 @@
                                     <ColumnDefinition Width="110" />
                                     <ColumnDefinition Width="90" />
                                 </Grid.ColumnDefinitions>
-                                <Border Width="28" Height="28" CornerRadius="8" Background="{Binding Name, Converter={StaticResource NameBrush}}">
-                                    <TextBlock Text="{Binding Name, Converter={StaticResource Initial}}" Foreground="White" FontWeight="Bold" FontSize="12"
+                                <Border Width="28" Height="28" CornerRadius="8" Background="{Binding Name, Converter={StaticResource NameBrush}}" BorderBrush="{DynamicResource OnFill}" BorderThickness="1.5">
+                                    <TextBlock Text="{Binding Name, Converter={StaticResource Initial}}" Foreground="{DynamicResource OnFill}" FontWeight="Bold" FontSize="12"
                                                HorizontalAlignment="Center" VerticalAlignment="Center" />
                                 </Border>
                                 <TextBlock Grid.Column="1" Text="{Binding DisplayName}" FontSize="13" VerticalAlignment="Center" Margin="14,0,0,0" TextTrimming="CharacterEllipsis" />
-                                <TextBlock Grid.Column="2" Text="{Binding Pid}" FontSize="12.5" Foreground="{StaticResource SubText}" HorizontalAlignment="Right" VerticalAlignment="Center" />
+                                <TextBlock Grid.Column="2" Text="{Binding Pid}" FontSize="12.5" Foreground="{DynamicResource SubText}" HorizontalAlignment="Right" VerticalAlignment="Center" />
                                 <TextBlock Grid.Column="3" Text="{Binding CpuText}" FontSize="13" FontWeight="SemiBold" HorizontalAlignment="Right" VerticalAlignment="Center" />
                                 <TextBlock Grid.Column="4" Text="{Binding MemoryText}" FontSize="13" FontWeight="SemiBold" HorizontalAlignment="Right" VerticalAlignment="Center" />
-                                <TextBlock Grid.Column="5" Text="{Binding Threads}" FontSize="12.5" Foreground="{StaticResource SubText}" HorizontalAlignment="Right" VerticalAlignment="Center" />
+                                <TextBlock Grid.Column="5" Text="{Binding Threads}" FontSize="12.5" Foreground="{DynamicResource SubText}" HorizontalAlignment="Right" VerticalAlignment="Center" />
                             </Grid>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
             </DockPanel>
-        </Border>
+        </c:Surface>
     </Grid>
 </UserControl>

@@ -38,4 +38,21 @@ public static class UiProps
 
     public static string? GetPlaceholder(DependencyObject o) => (string?)o.GetValue(PlaceholderProperty);
     public static void SetPlaceholder(DependencyObject o, string? v) => o.SetValue(PlaceholderProperty, v);
+
+    /// <summary>Keeps a Border's corner radius at half its height (WPF turns oversized radii into ellipses).</summary>
+    public static readonly DependencyProperty PillProperty = DependencyProperty.RegisterAttached(
+        "Pill", typeof(bool), typeof(UiProps), new PropertyMetadata(false, OnPillChanged));
+
+    public static bool GetPill(DependencyObject o) => (bool)o.GetValue(PillProperty);
+    public static void SetPill(DependencyObject o, bool v) => o.SetValue(PillProperty, v);
+
+    private static void OnPillChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+    {
+        if (d is not Border b) return;
+        b.SizeChanged -= UpdatePill;
+        if (e.NewValue is true) b.SizeChanged += UpdatePill;
+    }
+
+    private static void UpdatePill(object sender, SizeChangedEventArgs e) =>
+        ((Border)sender).CornerRadius = new CornerRadius(e.NewSize.Height / 2);
 }

@@ -1,0 +1,35 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!-- Light palette: lavender-white paper, midnight-indigo ink. -->
+    <SolidColorBrush x:Key="Ink" Color="#1E1A3C" />
+    <SolidColorBrush x:Key="OnInk" Color="#F4F2FA" />
+    <SolidColorBrush x:Key="OnFill" Color="#1E1A3C" />
+    <SolidColorBrush x:Key="Shadow" Color="#1E1A3C" />
+    <SolidColorBrush x:Key="Paper" Color="#F4F2FA" />
+    <SolidColorBrush x:Key="Bg" Color="#F4F2FA" />
+    <SolidColorBrush x:Key="Sidebar" Color="#ECE8F6" />
+    <SolidColorBrush x:Key="CardBrush" Color="#FFFFFF" />
+    <SolidColorBrush x:Key="CardAlt" Color="#F4F2FA" />
+    <SolidColorBrush x:Key="CardHover" Color="#ECE8F6" />
+    <SolidColorBrush x:Key="Selected" Color="#FFF1C2" />
+    <SolidColorBrush x:Key="Stroke" Color="#1E1A3C" />
+    <SolidColorBrush x:Key="StrokeStrong" Color="#1E1A3C" />
+    <SolidColorBrush x:Key="Hairline" Color="#DCD6EC" />
+    <SolidColorBrush x:Key="Text" Color="#1E1A3C" />
+    <SolidColorBrush x:Key="SubText" Color="#57536F" />
+    <SolidColorBrush x:Key="Muted" Color="#8A86A0" />
+    <SolidColorBrush x:Key="Accent2" Color="#1F9D6B" />
+    <SolidColorBrush x:Key="Success" Color="#1F9D6B" />
+    <SolidColorBrush x:Key="Warning" Color="#C77700" />
+    <SolidColorBrush x:Key="Danger" Color="#E0453F" />
+    <SolidColorBrush x:Key="TrackBrush" Color="#E6E1F3" />
+    <SolidColorBrush x:Key="NavHover" Color="#E3DEF2" />
+    <SolidColorBrush x:Key="CaptionHover" Color="#E3DEF2" />
+    <SolidColorBrush x:Key="CheckHover" Color="#FFF4CC" />
+    <SolidColorBrush x:Key="FocusFill" Color="#FFFBEA" />
+    <SolidColorBrush x:Key="ThumbBrush" Color="#CBC4E0" />
+    <SolidColorBrush x:Key="ThumbHover" Color="#8D86AB" />
+    <SolidColorBrush x:Key="Swash" Color="#FFCF33" />
+    <SolidColorBrush x:Key="Scrim" Color="#991E1A3C" />
+    <SolidColorBrush x:Key="HeroBlob" Color="#FFE58F" />
+</ResourceDictionary>

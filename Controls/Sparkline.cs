@@ -27,11 +27,11 @@ public sealed class Sparkline : FrameworkElement
     public Brush Stroke { get => (Brush)GetValue(StrokeProperty); set => SetValue(StrokeProperty, value); }
     public Brush? Fill { get => (Brush?)GetValue(FillProperty); set => SetValue(FillProperty, value); }
 
-    private static readonly Pen GridPen = CreateGridPen();
-
-    private static Pen CreateGridPen()
+    // Faint dashed guides in the line colour, so they follow the theme.
+    private Pen CreateGridPen()
     {
-        var p = new Pen(new SolidColorBrush(Color.FromArgb(0x40, 0x3A, 0x42, 0x5A)), 1) { DashStyle = new DashStyle([3, 4], 0) };
+        var c = (Stroke as SolidColorBrush)?.Color ?? Colors.Gray;
+        var p = new Pen(new SolidColorBrush(Color.FromArgb(0x30, c.R, c.G, c.B)), 1) { DashStyle = new DashStyle([3, 4], 0) };
         p.Freeze();
         return p;
     }
@@ -42,10 +42,11 @@ public sealed class Sparkline : FrameworkElement
         if (w < 4 || h < 4) return;
 
         dc.DrawRectangle(Brushes.Transparent, null, new Rect(0, 0, w, h));
+        var gridPen = CreateGridPen();
         for (int i = 1; i < 4; i++)
         {
             double y = Math.Round(h * i / 4) + 0.5;
-            dc.DrawLine(GridPen, new Point(0, y), new Point(w, y));
+            dc.DrawLine(gridPen, new Point(0, y), new Point(w, y));
         }
 
         var values = Values;
@@ -82,6 +83,6 @@ public sealed class Sparkline : FrameworkElement
         dc.DrawGeometry(null, pen, line);
 
         var last = P(values.Length - 1);
-        dc.DrawEllipse(Stroke, null, last, 3.5, 3.5);
+        dc.DrawEllipse(Fill ?? Stroke, new Pen(Stroke, 2), last, 4, 4);
     }
 }

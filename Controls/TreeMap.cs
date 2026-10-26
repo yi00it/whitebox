@@ -36,9 +36,9 @@ public sealed class TreeMap : FrameworkElement
 
     private static readonly Color[] Palette =
     [
-        Color.FromRgb(0x7C, 0x5C, 0xFF), Color.FromRgb(0x36, 0xA9, 0xFF), Color.FromRgb(0x2F, 0xD0, 0xA0),
-        Color.FromRgb(0xFF, 0x8A, 0x4C), Color.FromRgb(0xFF, 0x5C, 0x9A), Color.FromRgb(0xFF, 0xC2, 0x4B),
-        Color.FromRgb(0x5B, 0x8C, 0xFF), Color.FromRgb(0xB3, 0x6B, 0xFF), Color.FromRgb(0x22, 0xD3, 0xB6),
+        Color.FromRgb(0xFF, 0xCF, 0x33), Color.FromRgb(0x8C, 0xC8, 0xFF), Color.FromRgb(0x7E, 0xE2, 0xC2),
+        Color.FromRgb(0xFF, 0xB0, 0xD0), Color.FromRgb(0xC9, 0xE5, 0x8C), Color.FromRgb(0xFF, 0x9B, 0x85),
+        Color.FromRgb(0xC2, 0xB0, 0xFF), Color.FromRgb(0x7F, 0xD5, 0xE6), Color.FromRgb(0xFF, 0xC4, 0x8A),
     ];
 
     private readonly List<(Rect Rect, TreeMapItem Item, Brush Fill)> _layout = [];
@@ -46,8 +46,9 @@ public sealed class TreeMap : FrameworkElement
     private bool _dirty = true;
     private int _hover = -1;
     private readonly ToolTip _tip = new();
-    private readonly Typeface _bold = new(new FontFamily("Segoe UI Variable Text, Segoe UI"), FontStyles.Normal, FontWeights.SemiBold, FontStretches.Normal);
-    private readonly Typeface _regular = new(new FontFamily("Segoe UI Variable Text, Segoe UI"), FontStyles.Normal, FontWeights.Normal, FontStretches.Normal);
+    private static readonly FontFamily UiFont = (FontFamily)Application.Current.FindResource("UiFont");
+    private readonly Typeface _bold = new(UiFont, FontStyles.Normal, FontWeights.SemiBold, FontStretches.Normal);
+    private readonly Typeface _regular = new(UiFont, FontStyles.Normal, FontWeights.Normal, FontStretches.Normal);
 
     public TreeMap()
     {
@@ -87,9 +88,8 @@ public sealed class TreeMap : FrameworkElement
         int index = 0;
         foreach (var (rect, item) in rects)
         {
-            var c = item.IsAggregate ? Color.FromRgb(0x3A, 0x41, 0x56) : Palette[index++ % Palette.Length];
-            var dark = Color.FromRgb((byte)(c.R * 0.62), (byte)(c.G * 0.62), (byte)(c.B * 0.62));
-            var fill = new LinearGradientBrush(c, dark, new Point(0, 0), new Point(1, 1));
+            var c = item.IsAggregate ? Color.FromRgb(0xDC, 0xD7, 0xEA) : Palette[index++ % Palette.Length];
+            var fill = new SolidColorBrush(c);
             fill.Freeze();
             _layout.Add((rect, item, fill));
         }
@@ -152,18 +152,18 @@ public sealed class TreeMap : FrameworkElement
         for (int i = 0; i < _layout.Count; i++)
         {
             var (rect, item, fill) = _layout[i];
-            var r = Rect.Inflate(rect, -2, -2);
+            var r = Rect.Inflate(rect, -3, -3);
             if (r.Width < 1 || r.Height < 1) continue;
             bool hover = i == _hover;
-            double radius = Math.Min(8, Math.Min(r.Width, r.Height) / 3);
-            dc.DrawRoundedRectangle(fill, hover ? HoverPen : null, r, radius, radius);
-            if (hover) dc.DrawRoundedRectangle(HoverOverlay, null, r, radius, radius);
+            double radius = Math.Min(10, Math.Min(r.Width, r.Height) / 3);
+            if (hover) dc.DrawRoundedRectangle(Ink, null, new Rect(r.X + 3, r.Y + 3, r.Width, r.Height), radius, radius);
+            dc.DrawRoundedRectangle(fill, hover ? HoverPen : EdgePen, r, radius, radius);
 
             if (r.Width > 64 && r.Height > 36)
             {
                 double maxW = r.Width - 16;
                 var name = new FormattedText(item.Name, CultureInfo.CurrentUICulture,
-                    FlowDirection.LeftToRight, _bold, 12.5, Brushes.White, dpi)
+                    FlowDirection.LeftToRight, _bold, 12.5, Ink, dpi)
                 { MaxTextWidth = maxW, MaxLineCount = 1, Trimming = TextTrimming.CharacterEllipsis };
                 dc.DrawText(name, new Point(r.X + 8, r.Y + 7));
 
@@ -175,9 +175,10 @@ public sealed class TreeMap : FrameworkElement
         }
     }
 
-    private static readonly Pen HoverPen = Freeze(new Pen(Brushes.White, 2));
-    private static readonly Brush HoverOverlay = Freeze(new SolidColorBrush(Color.FromArgb(0x30, 0xFF, 0xFF, 0xFF)));
-    private static readonly Brush SubtleText = Freeze(new SolidColorBrush(Color.FromArgb(0xC8, 0xFF, 0xFF, 0xFF)));
+    private static readonly Brush Ink = Freeze(new SolidColorBrush(Color.FromRgb(0x1E, 0x1A, 0x3C)));
+    private static readonly Pen EdgePen = Freeze(new Pen(Ink, 1.5));
+    private static readonly Pen HoverPen = Freeze(new Pen(Ink, 2.5));
+    private static readonly Brush SubtleText = Freeze(new SolidColorBrush(Color.FromArgb(0xB0, 0x1E, 0x1A, 0x3C)));
 
     private static T Freeze<T>(T f) where T : Freezable
     {

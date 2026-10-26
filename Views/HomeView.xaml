@@ -2,6 +2,15 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:c="clr-namespace:Whitebox.Controls">
+    <UserControl.Resources>
+        <PathGeometry x:Key="Sparkle" Figures="M0,-11 Q1,-1 11,0 Q1,1 0,11 Q-1,1 -11,0 Q-1,-1 0,-11 Z" />
+
+        <Style x:Key="StatCard" TargetType="c:Surface" BasedOn="{StaticResource Card}">
+            <Setter Property="ShadowOffset" Value="4" />
+            <Setter Property="CornerRadius" Value="16" />
+        </Style>
+    </UserControl.Resources>
+
     <Grid Margin="36,4,36,28">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -13,61 +22,136 @@
                       Glyph="&#xE945;" Accent="{StaticResource GradHome}" />
 
         <!-- ================= Hero ================= -->
-        <Border Grid.Row="1" Style="{StaticResource Card}" Padding="0" ClipToBounds="True" MinHeight="340">
+        <c:Surface Grid.Row="1" Style="{StaticResource Card}" Padding="0" MinHeight="340" CornerRadius="24" ShadowOffset="7" Margin="0,0,7,7">
             <Grid>
-                <!-- soft glows -->
-                <Ellipse Width="520" Height="520" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="-140,0,0,0" Opacity="0.22">
-                    <Ellipse.Fill>
-                        <RadialGradientBrush>
-                            <GradientStop Color="#8B6CFF" Offset="0" />
-                            <GradientStop Color="#008B6CFF" Offset="1" />
-                        </RadialGradientBrush>
-                    </Ellipse.Fill>
-                </Ellipse>
-                <Ellipse Width="460" Height="460" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,-160,-220" Opacity="0.16">
-                    <Ellipse.Fill>
-                        <RadialGradientBrush>
-                            <GradientStop Color="#36C9FF" Offset="0" />
-                            <GradientStop Color="#0036C9FF" Offset="1" />
-                        </RadialGradientBrush>
-                    </Ellipse.Fill>
-                </Ellipse>
-
                 <!-- Idle -->
-                <Grid Visibility="{Binding State, Converter={StaticResource StateVis}, ConverterParameter=Idle}" Margin="48,32">
+                <Grid Visibility="{Binding State, Converter={StaticResource StateVis}, ConverterParameter=Idle}">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
-                    <Button Style="{StaticResource OrbButton}" Width="190" Height="190" Command="{Binding ScanCommand}">
-                        <StackPanel>
-                            <TextBlock Text="&#xE945;" Style="{StaticResource Icon}" FontSize="34" />
-                            <TextBlock Text="Scan" FontSize="22" FontWeight="SemiBold" HorizontalAlignment="Center" Margin="0,8,0,0" />
+
+                    <!-- illustration: a grumpy little white box sitting on a table. It glances around, blinks and sighs. -->
+                    <Viewbox Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,12,28,8" MaxHeight="400" Stretch="Uniform">
+                        <Canvas Width="420" Height="336">
+                            <Canvas.Triggers>
+                                <EventTrigger RoutedEvent="Loaded">
+                                    <BeginStoryboard>
+                                        <Storyboard Duration="0:0:8" RepeatBehavior="Forever">
+                                            <!-- side-eye: left… right… back -->
+                                            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="look" Storyboard.TargetProperty="X">
+                                                <LinearDoubleKeyFrame KeyTime="0:0:1.4" Value="0" />
+                                                <EasingDoubleKeyFrame KeyTime="0:0:1.8" Value="-3.5"><EasingDoubleKeyFrame.EasingFunction><SineEase EasingMode="EaseInOut" /></EasingDoubleKeyFrame.EasingFunction></EasingDoubleKeyFrame>
+                                                <LinearDoubleKeyFrame KeyTime="0:0:3.2" Value="-3.5" />
+                                                <EasingDoubleKeyFrame KeyTime="0:0:3.7" Value="3.5"><EasingDoubleKeyFrame.EasingFunction><SineEase EasingMode="EaseInOut" /></EasingDoubleKeyFrame.EasingFunction></EasingDoubleKeyFrame>
+                                                <LinearDoubleKeyFrame KeyTime="0:0:5" Value="3.5" />
+                                                <EasingDoubleKeyFrame KeyTime="0:0:5.4" Value="0"><EasingDoubleKeyFrame.EasingFunction><SineEase EasingMode="EaseInOut" /></EasingDoubleKeyFrame.EasingFunction></EasingDoubleKeyFrame>
+                                            </DoubleAnimationUsingKeyFrames>
+                                            <!-- slow, unimpressed blink -->
+                                            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="blink" Storyboard.TargetProperty="ScaleY">
+                                                <LinearDoubleKeyFrame KeyTime="0:0:5.9" Value="1" />
+                                                <LinearDoubleKeyFrame KeyTime="0:0:6.05" Value="0.1" />
+                                                <LinearDoubleKeyFrame KeyTime="0:0:6.3" Value="0.1" />
+                                                <LinearDoubleKeyFrame KeyTime="0:0:6.45" Value="1" />
+                                            </DoubleAnimationUsingKeyFrames>
+                                            <!-- a heavy sigh -->
+                                            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="sigh" Storyboard.TargetProperty="ScaleY">
+                                                <LinearDoubleKeyFrame KeyTime="0:0:6.6" Value="1" />
+                                                <EasingDoubleKeyFrame KeyTime="0:0:7.0" Value="1.035"><EasingDoubleKeyFrame.EasingFunction><SineEase EasingMode="EaseOut" /></EasingDoubleKeyFrame.EasingFunction></EasingDoubleKeyFrame>
+                                                <EasingDoubleKeyFrame KeyTime="0:0:7.6" Value="0.95"><EasingDoubleKeyFrame.EasingFunction><SineEase EasingMode="EaseInOut" /></EasingDoubleKeyFrame.EasingFunction></EasingDoubleKeyFrame>
+                                                <EasingDoubleKeyFrame KeyTime="0:0:8" Value="1"><EasingDoubleKeyFrame.EasingFunction><SineEase EasingMode="EaseInOut" /></EasingDoubleKeyFrame.EasingFunction></EasingDoubleKeyFrame>
+                                            </DoubleAnimationUsingKeyFrames>
+                                            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="sigh" Storyboard.TargetProperty="ScaleX">
+                                                <LinearDoubleKeyFrame KeyTime="0:0:7.0" Value="1" />
+                                                <EasingDoubleKeyFrame KeyTime="0:0:7.6" Value="1.03"><EasingDoubleKeyFrame.EasingFunction><SineEase EasingMode="EaseInOut" /></EasingDoubleKeyFrame.EasingFunction></EasingDoubleKeyFrame>
+                                                <EasingDoubleKeyFrame KeyTime="0:0:8" Value="1"><EasingDoubleKeyFrame.EasingFunction><SineEase EasingMode="EaseInOut" /></EasingDoubleKeyFrame.EasingFunction></EasingDoubleKeyFrame>
+                                            </DoubleAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </EventTrigger>
+                            </Canvas.Triggers>
+
+                            <!-- warm disc behind -->
+                            <Ellipse Canvas.Left="80" Canvas.Top="20" Width="260" Height="260" Fill="{DynamicResource HeroBlob}" />
+
+                            <!-- soft floor shadow under the table -->
+                            <Path Data="M100,274 L210,334 L320,274 L210,214 Z" Fill="{DynamicResource Ink}" Opacity="0.07" />
+
+                            <!-- table: legs, slab edges, top -->
+                            <Rectangle Canvas.Left="113" Canvas.Top="200" Width="9" Height="72" Fill="#E3A96B" Stroke="{DynamicResource OnFill}" StrokeThickness="2.5" />
+                            <Rectangle Canvas.Left="298" Canvas.Top="200" Width="9" Height="72" Fill="#D08F52" Stroke="{DynamicResource OnFill}" StrokeThickness="2.5" />
+                            <Rectangle Canvas.Left="205" Canvas.Top="255" Width="10" Height="72" Fill="#E3A96B" Stroke="{DynamicResource OnFill}" StrokeThickness="2.5" />
+                            <Path Data="M115,195 L210,250 L210,261 L115,206 Z" Fill="#E3A96B" Stroke="{DynamicResource OnFill}" StrokeThickness="2.5" StrokeLineJoin="Round" />
+                            <Path Data="M210,250 L305,195 L305,206 L210,261 Z" Fill="#D08F52" Stroke="{DynamicResource OnFill}" StrokeThickness="2.5" StrokeLineJoin="Round" />
+                            <Path Data="M210,140 L305,195 L210,250 L115,195 Z" Fill="#F6C994" Stroke="{DynamicResource OnFill}" StrokeThickness="2.5" StrokeLineJoin="Round" />
+
+                            <!-- contact shadow on the tabletop -->
+                            <Path Data="M214,161 L282,199 L214,238 L150,199 Z" Fill="{DynamicResource OnFill}" Opacity="0.14" />
+
+                            <!-- the box: an isometric cube, 72 units on a side, resting on the table's centre -->
+                            <Canvas>
+                                <Canvas.RenderTransform><ScaleTransform x:Name="sigh" CenterX="210" CenterY="231" /></Canvas.RenderTransform>
+                                <Path Data="M210,87 L272.4,123 L210,159 L147.6,123 Z" Fill="White" />
+                                <Path Data="M147.6,123 L210,159 L210,231 L147.6,195 Z" Fill="#F4F2FA" />
+                                <Path Data="M210,159 L272.4,123 L272.4,195 L210,231 Z" Fill="#E4E0F1" />
+
+                                <!-- the face, drawn flat and mapped onto the left wall -->
+                                <Canvas RenderTransform="1,0.577,0,1,147.6,123">
+                                    <!-- brows, pulled down toward the middle -->
+                                    <Path Data="M10,20 L25,24 M37,24 L52,20" Stroke="{DynamicResource OnFill}" StrokeThickness="2.6" StrokeStartLineCap="Round" StrokeEndLineCap="Round" />
+                                    <Canvas>
+                                        <Canvas.RenderTransform><ScaleTransform x:Name="blink" CenterY="34" /></Canvas.RenderTransform>
+                                        <!-- eyes: whites, pupils, then heavy lids over the top half -->
+                                        <Ellipse Canvas.Left="11" Canvas.Top="27" Width="14" Height="14" Fill="White" Stroke="{DynamicResource OnFill}" StrokeThickness="2" />
+                                        <Ellipse Canvas.Left="37" Canvas.Top="27" Width="14" Height="14" Fill="White" Stroke="{DynamicResource OnFill}" StrokeThickness="2" />
+                                        <Canvas>
+                                            <Canvas.RenderTransform><TranslateTransform x:Name="look" /></Canvas.RenderTransform>
+                                            <Ellipse Canvas.Left="15" Canvas.Top="32" Width="6.5" Height="6.5" Fill="{DynamicResource OnFill}" />
+                                            <Ellipse Canvas.Left="41" Canvas.Top="32" Width="6.5" Height="6.5" Fill="{DynamicResource OnFill}" />
+                                        </Canvas>
+                                        <Rectangle Canvas.Left="9" Canvas.Top="25" Width="18" Height="7.5" Fill="#F4F2FA" />
+                                        <Rectangle Canvas.Left="35" Canvas.Top="25" Width="18" Height="7.5" Fill="#F4F2FA" />
+                                        <Path Data="M10.5,32.5 H25.5 M36.5,32.5 H51.5" Stroke="{DynamicResource OnFill}" StrokeThickness="2.4" StrokeStartLineCap="Round" StrokeEndLineCap="Round" />
+                                    </Canvas>
+                                    <!-- frown -->
+                                    <Path Data="M24,55 Q31,49 38,55" Stroke="{DynamicResource OnFill}" StrokeThickness="2.6" StrokeStartLineCap="Round" StrokeEndLineCap="Round" />
+                                </Canvas>
+
+                                <Path Data="M210,87 L272.4,123 L272.4,195 L210,231 L147.6,195 L147.6,123 Z M147.6,123 L210,159 L272.4,123 M210,159 L210,231"
+                                      Stroke="{DynamicResource OnFill}" StrokeThickness="2.5" StrokeLineJoin="Round" StrokeStartLineCap="Round" StrokeEndLineCap="Round" />
+                            </Canvas>
+                        </Canvas>
+                    </Viewbox>
+
+                    <StackPanel x:Name="HeroText" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="48,36,0,36">
+                        <Border Style="{StaticResource Eyebrow}">
+                            <TextBlock Text="SMART CARE" FontSize="11" FontWeight="Bold" />
+                        </Border>
+                        <StackPanel Margin="0,16,0,0" TextElement.FontFamily="{StaticResource DisplayFont}" TextElement.FontSize="52" TextElement.FontWeight="Black">
+                            <TextBlock Text="Your PC, but" />
+                            <StackPanel Orientation="Horizontal" Margin="0,-2,0,0">
+                                <StackPanel.RenderTransform><TranslateTransform x:Name="SwapShift" /></StackPanel.RenderTransform>
+                                <c:OutlineText x:Name="SwapWord" Text="fresher" Fill="{StaticResource Zest}" Stroke="{DynamicResource OnFill}" StrokeThickness="2" Depth="3" />
+                                <TextBlock Text="." />
+                            </StackPanel>
                         </StackPanel>
-                    </Button>
-                    <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="48,0,0,0">
-                        <TextBlock Text="Let's give your PC a checkup" Style="{StaticResource H1}" FontSize="30" />
                         <TextBlock Text="Smart Care looks for system junk, browser and app caches, and memory hogs, then lets you fix everything at once."
-                                   Style="{StaticResource Sub}" FontSize="14" TextWrapping="Wrap" Margin="0,10,0,22" MaxWidth="520" HorizontalAlignment="Left" />
+                                   Style="{StaticResource Sub}" FontSize="14.5" TextWrapping="Wrap" LineHeight="22" Margin="0,14,0,26" MaxWidth="420" HorizontalAlignment="Left" />
                         <StackPanel Orientation="Horizontal">
-                            <Border Background="#1A2132" CornerRadius="8" Padding="10,6" Margin="0,0,8,0">
+                            <Button Style="{StaticResource PrimaryButton}" Command="{Binding ScanCommand}" Padding="28,13" FontSize="14.5" FontWeight="Bold">
                                 <StackPanel Orientation="Horizontal">
-                                    <TextBlock Text="&#xE74D;" Style="{StaticResource Icon}" FontSize="13" Foreground="{StaticResource Success}" />
-                                    <TextBlock Text="Cleanup" Margin="8,0,0,0" FontSize="12.5" Foreground="{StaticResource SubText}" />
+                                    <TextBlock Text="&#xE945;" Style="{StaticResource Icon}" FontSize="15" />
+                                    <TextBlock Text="Scan my PC" Margin="10,0,0,0" />
                                 </StackPanel>
-                            </Border>
-                            <Border Background="#1A2132" CornerRadius="8" Padding="10,6" Margin="0,0,8,0">
-                                <StackPanel Orientation="Horizontal">
-                                    <TextBlock Text="&#xE9D9;" Style="{StaticResource Icon}" FontSize="13" Foreground="#FF7A65" />
-                                    <TextBlock Text="Speed" Margin="8,0,0,0" FontSize="12.5" Foreground="{StaticResource SubText}" />
-                                </StackPanel>
-                            </Border>
-                            <Border Background="#1A2132" CornerRadius="8" Padding="10,6">
-                                <StackPanel Orientation="Horizontal">
-                                    <TextBlock Text="&#xE72E;" Style="{StaticResource Icon}" FontSize="13" Foreground="{StaticResource Accent2}" />
-                                    <TextBlock Text="Privacy" Margin="8,0,0,0" FontSize="12.5" Foreground="{StaticResource SubText}" />
-                                </StackPanel>
-                            </Border>
+                            </Button>
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="18,0,0,3" TextElement.FontSize="12.5" TextElement.FontWeight="SemiBold">
+                                <TextBlock Text="&#xE74D;" Style="{StaticResource Icon}" FontSize="13" />
+                                <TextBlock Text="Cleanup" Margin="6,0,14,0" VerticalAlignment="Center" />
+                                <TextBlock Text="&#xE9D9;" Style="{StaticResource Icon}" FontSize="13" />
+                                <TextBlock Text="Speed" Margin="6,0,14,0" VerticalAlignment="Center" />
+                                <TextBlock Text="&#xE72E;" Style="{StaticResource Icon}" FontSize="13" />
+                                <TextBlock Text="Privacy" Margin="6,0,0,0" VerticalAlignment="Center" />
+                            </StackPanel>
                         </StackPanel>
                     </StackPanel>
                 </Grid>
@@ -75,11 +159,11 @@
                 <!-- Scanning / Cleaning -->
                 <StackPanel Visibility="{Binding State, Converter={StaticResource StateVis}, ConverterParameter='Scanning,Cleaning'}"
                             HorizontalAlignment="Center" VerticalAlignment="Center">
-                    <Grid Width="190" Height="190">
-                        <c:RingGauge Value="{Binding Progress}" Thickness="12" Brush="{StaticResource AccentGradient}" TrackBrush="{StaticResource TrackBrush}" />
-                        <c:Spinner Width="150" Height="150" Thickness="2" Brush="#5536C9FF" />
+                    <Grid Width="200" Height="200">
+                        <c:RingGauge Value="{Binding Progress}" Thickness="20" Brush="{StaticResource Zest}" TrackBrush="{DynamicResource CardAlt}" Outline="{DynamicResource Ink}" />
+                        <c:Spinner Width="138" Height="138" Thickness="2" Brush="{DynamicResource Ink}" Opacity="0.25" />
                         <StackPanel VerticalAlignment="Center">
-                            <TextBlock HorizontalAlignment="Center" Style="{StaticResource Big}" FontSize="36"
+                            <TextBlock HorizontalAlignment="Center" Style="{StaticResource Big}" FontSize="38"
                                        Text="{Binding Progress, StringFormat={}{0:P0}}" />
                             <TextBlock HorizontalAlignment="Center" Style="{StaticResource Sub}"
                                        Text="{Binding State}" />
@@ -96,143 +180,142 @@
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
                     <StackPanel>
-                        <TextBlock Text="Here's what we found" Style="{StaticResource H1}" />
-                        <TextBlock Text="Pick what to fix, then hit Run." Style="{StaticResource Sub}" FontSize="13.5" Margin="0,4,0,0" />
+                        <Border Style="{StaticResource Eyebrow}">
+                            <TextBlock Text="SCAN COMPLETE" FontSize="11" FontWeight="Bold" />
+                        </Border>
+                        <TextBlock Text="Here's what we found" Style="{StaticResource H1}" FontSize="34" FontWeight="Black" Margin="0,12,0,0" />
+                        <TextBlock Text="Pick what to fix, then hit Run." Style="{StaticResource Sub}" FontSize="14" Margin="0,4,0,0" />
                     </StackPanel>
 
-                    <UniformGrid Grid.Row="1" Columns="3" Margin="0,22,0,22">
+                    <UniformGrid Grid.Row="1" Columns="3" Margin="0,24,0,24">
                         <!-- Cleanup card -->
-                        <Border Background="#171C2A" CornerRadius="14" Padding="20" Margin="0,0,10,0" BorderBrush="{StaticResource Stroke}" BorderThickness="1">
+                        <c:Surface Style="{StaticResource StatCard}" Margin="0,0,14,4">
                             <DockPanel>
                                 <DockPanel DockPanel.Dock="Top">
-                                    <Border Width="40" Height="40" CornerRadius="12" Background="{StaticResource GradClean}">
-                                        <TextBlock Text="&#xE74D;" Style="{StaticResource Icon}" Foreground="White" />
-                                    </Border>
+                                    <c:Surface Style="{StaticResource Tile}" Background="{StaticResource GradClean}">
+                                        <TextBlock Text="&#xE74D;" Style="{StaticResource Icon}" />
+                                    </c:Surface>
                                     <CheckBox DockPanel.Dock="Right" IsChecked="{Binding DoClean}" VerticalAlignment="Top" />
-                                    <TextBlock Text="Cleanup" Style="{StaticResource H3}" Margin="12,0" VerticalAlignment="Center" />
+                                    <TextBlock Text="Cleanup" Style="{StaticResource H3}" Margin="14,0" VerticalAlignment="Center" />
                                 </DockPanel>
-                                <TextBlock DockPanel.Dock="Top" Text="{Binding JunkSize, Converter={StaticResource Bytes}}" Style="{StaticResource Big}" FontSize="32" Margin="0,18,0,0" />
+                                <TextBlock DockPanel.Dock="Top" Text="{Binding JunkSize, Converter={StaticResource Bytes}}" Style="{StaticResource Big}" FontSize="36" Margin="0,18,0,0" />
                                 <TextBlock DockPanel.Dock="Top" Text="{Binding JunkDetail}" Style="{StaticResource Sub}" TextWrapping="Wrap" Margin="0,4,0,0" />
                                 <Button DockPanel.Dock="Bottom" Style="{StaticResource LinkButton}" Content="Review details →" HorizontalAlignment="Left" Margin="-8,12,0,0"
                                         VerticalAlignment="Bottom" Command="{Binding GoCommand}" CommandParameter="cleanup" />
                                 <Border />
                             </DockPanel>
-                        </Border>
+                        </c:Surface>
                         <!-- Memory card -->
-                        <Border Background="#171C2A" CornerRadius="14" Padding="20" Margin="5,0" BorderBrush="{StaticResource Stroke}" BorderThickness="1">
+                        <c:Surface Style="{StaticResource StatCard}" Margin="7,0,7,4">
                             <DockPanel>
                                 <DockPanel DockPanel.Dock="Top">
-                                    <Border Width="40" Height="40" CornerRadius="12" Background="{StaticResource GradPerf}">
-                                        <TextBlock Text="&#xE950;" Style="{StaticResource Icon}" Foreground="White" />
-                                    </Border>
+                                    <c:Surface Style="{StaticResource Tile}" Background="{StaticResource GradPerf}">
+                                        <TextBlock Text="&#xE950;" Style="{StaticResource Icon}" />
+                                    </c:Surface>
                                     <CheckBox DockPanel.Dock="Right" IsChecked="{Binding DoMemory}" VerticalAlignment="Top" />
-                                    <TextBlock Text="Memory" Style="{StaticResource H3}" Margin="12,0" VerticalAlignment="Center" />
+                                    <TextBlock Text="Memory" Style="{StaticResource H3}" Margin="14,0" VerticalAlignment="Center" />
                                 </DockPanel>
-                                <TextBlock DockPanel.Dock="Top" Text="{Binding RamAtScan, StringFormat={}{0:0}% used}" Style="{StaticResource Big}" FontSize="32" Margin="0,18,0,0" />
+                                <TextBlock DockPanel.Dock="Top" Text="{Binding RamAtScan, StringFormat={}{0:0}% used}" Style="{StaticResource Big}" FontSize="36" Margin="0,18,0,0" />
                                 <TextBlock DockPanel.Dock="Top" Text="Trim idle apps' memory so active ones get more room." Style="{StaticResource Sub}" TextWrapping="Wrap" Margin="0,4,0,0" />
                                 <Button DockPanel.Dock="Bottom" Style="{StaticResource LinkButton}" Content="Open Performance →" HorizontalAlignment="Left" Margin="-8,12,0,0"
                                         VerticalAlignment="Bottom" Command="{Binding GoCommand}" CommandParameter="performance" />
                                 <Border />
                             </DockPanel>
-                        </Border>
+                        </c:Surface>
                         <!-- Startup card -->
-                        <Border Background="#171C2A" CornerRadius="14" Padding="20" Margin="10,0,0,0" BorderBrush="{StaticResource Stroke}" BorderThickness="1">
+                        <c:Surface Style="{StaticResource StatCard}" Margin="14,0,0,4">
                             <DockPanel>
                                 <DockPanel DockPanel.Dock="Top">
-                                    <Border Width="40" Height="40" CornerRadius="12" Background="{StaticResource GradStartup}">
-                                        <TextBlock Text="&#xE7E8;" Style="{StaticResource Icon}" Foreground="White" />
-                                    </Border>
-                                    <TextBlock Text="Startup" Style="{StaticResource H3}" Margin="12,0" VerticalAlignment="Center" />
+                                    <c:Surface Style="{StaticResource Tile}" Background="{StaticResource GradStartup}">
+                                        <TextBlock Text="&#xE7E8;" Style="{StaticResource Icon}" />
+                                    </c:Surface>
+                                    <TextBlock Text="Startup" Style="{StaticResource H3}" Margin="14,0" VerticalAlignment="Center" />
                                 </DockPanel>
-                                <TextBlock DockPanel.Dock="Top" Text="{Binding StartupEnabled, StringFormat={}{0} apps}" Style="{StaticResource Big}" FontSize="32" Margin="0,18,0,0" />
+                                <TextBlock DockPanel.Dock="Top" Text="{Binding StartupEnabled, StringFormat={}{0} apps}" Style="{StaticResource Big}" FontSize="36" Margin="0,18,0,0" />
                                 <TextBlock DockPanel.Dock="Top" Text="launch when you sign in. Fewer startup apps means a faster boot." Style="{StaticResource Sub}" TextWrapping="Wrap" Margin="0,4,0,0" />
                                 <Button DockPanel.Dock="Bottom" Style="{StaticResource LinkButton}" Content="Manage startup →" HorizontalAlignment="Left" Margin="-8,12,0,0"
                                         VerticalAlignment="Bottom" Command="{Binding GoCommand}" CommandParameter="startup" />
                                 <Border />
                             </DockPanel>
-                        </Border>
+                        </c:Surface>
                     </UniformGrid>
 
                     <StackPanel Grid.Row="2" Orientation="Horizontal">
-                        <Button Style="{StaticResource PrimaryButton}" Command="{Binding RunCommand}" Padding="34,12" FontSize="15">
+                        <Button Style="{StaticResource PrimaryButton}" Command="{Binding RunCommand}" Padding="30,13" FontSize="14.5" FontWeight="Bold">
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="&#xE768;" Style="{StaticResource Icon}" FontSize="14" />
                                 <TextBlock Text="Run Smart Care" Margin="10,0,0,0" />
                             </StackPanel>
                         </Button>
-                        <Button Style="{StaticResource GhostButton}" Content="Start over" Margin="10,0,0,0" Command="{Binding ResetCommand}" />
+                        <Button Style="{StaticResource GhostButton}" Content="Start over" Margin="12,0,0,0" Padding="22,13" FontSize="14.5" Command="{Binding ResetCommand}" />
                     </StackPanel>
                 </Grid>
 
                 <!-- Done -->
                 <StackPanel Visibility="{Binding State, Converter={StaticResource StateVis}, ConverterParameter=Done}"
                             HorizontalAlignment="Center" VerticalAlignment="Center">
-                    <Grid Width="130" Height="130" HorizontalAlignment="Center">
-                        <Ellipse Fill="{StaticResource GradClean}" Opacity="0.35" Margin="-10">
-                            <Ellipse.Effect>
-                                <BlurEffect Radius="30" />
-                            </Ellipse.Effect>
-                        </Ellipse>
-                        <Ellipse Fill="{StaticResource GradClean}" />
-                        <TextBlock Text="&#xE73E;" Style="{StaticResource Icon}" FontSize="52" Foreground="White" />
+                    <Grid Width="128" Height="128" HorizontalAlignment="Center">
+                        <Ellipse Fill="{DynamicResource Shadow}" Margin="7,7,0,0" />
+                        <Ellipse Fill="{StaticResource Mint}" Stroke="{DynamicResource Ink}" StrokeThickness="2.5" Margin="0,0,7,7" />
+                        <TextBlock Text="&#xE73E;" Style="{StaticResource Icon}" FontSize="50" FontWeight="Bold" Foreground="{DynamicResource OnFill}" Margin="0,0,7,7" />
                     </Grid>
-                    <TextBlock Text="{Binding DoneTitle}" Style="{StaticResource H1}" FontSize="30" HorizontalAlignment="Center" Margin="0,26,0,0" />
+                    <TextBlock Text="{Binding DoneTitle}" Style="{StaticResource H1}" FontSize="34" FontWeight="Black" HorizontalAlignment="Center" Margin="0,26,0,0" />
                     <TextBlock Text="{Binding DoneDetail}" Style="{StaticResource Sub}" FontSize="14" HorizontalAlignment="Center" Margin="0,8,0,22"
                                TextWrapping="Wrap" TextAlignment="Center" MaxWidth="600" />
                     <Button Style="{StaticResource GhostButton}" Content="Scan again" HorizontalAlignment="Center" Command="{Binding ResetCommand}" />
                 </StackPanel>
             </Grid>
-        </Border>
+        </c:Surface>
 
         <!-- ================= Live tiles ================= -->
-        <UniformGrid Grid.Row="2" Columns="4" Margin="0,18,0,0">
-            <Border Style="{StaticResource Card}" Margin="0,0,9,0">
+        <UniformGrid Grid.Row="2" Columns="4" Margin="0,16,0,0">
+            <c:Surface Style="{StaticResource StatCard}" Margin="0,0,12,4">
                 <DockPanel>
-                    <Grid Width="70" Height="70" DockPanel.Dock="Left">
-                        <c:RingGauge Value="{Binding Monitor.Cpu, Converter={StaticResource Frac}}" Thickness="7" Brush="{StaticResource GradPerf}" />
-                        <TextBlock Text="&#xE9D9;" Style="{StaticResource Icon}" Foreground="{StaticResource SubText}" />
+                    <Grid Width="68" Height="68" DockPanel.Dock="Left">
+                        <c:RingGauge Value="{Binding Monitor.Cpu, Converter={StaticResource Frac}}" Thickness="11" Brush="{StaticResource GradPerf}" Outline="{DynamicResource Ink}" />
+                        <TextBlock Text="&#xE9D9;" Style="{StaticResource Icon}" Foreground="{DynamicResource Ink}" />
                     </Grid>
                     <StackPanel Margin="16,0,0,0" VerticalAlignment="Center">
                         <TextBlock Text="CPU" Style="{StaticResource Caption}" />
-                        <TextBlock Text="{Binding Monitor.CpuText}" Style="{StaticResource H2}" FontSize="22" />
+                        <TextBlock Text="{Binding Monitor.CpuText}" Style="{StaticResource H2}" FontSize="24" FontWeight="Black" />
                         <TextBlock Text="{Binding CpuName}" Style="{StaticResource Sub}" FontSize="11.5" ToolTip="{Binding CpuName}" />
                     </StackPanel>
                 </DockPanel>
-            </Border>
-            <Border Style="{StaticResource Card}" Margin="3,0,6,0">
+            </c:Surface>
+            <c:Surface Style="{StaticResource StatCard}" Margin="4,0,8,4">
                 <DockPanel>
-                    <Grid Width="70" Height="70" DockPanel.Dock="Left">
-                        <c:RingGauge Value="{Binding Monitor.RamPercent, Converter={StaticResource Frac}}" Thickness="7" Brush="{StaticResource GradHome}" />
-                        <TextBlock Text="&#xE950;" Style="{StaticResource Icon}" Foreground="{StaticResource SubText}" />
+                    <Grid Width="68" Height="68" DockPanel.Dock="Left">
+                        <c:RingGauge Value="{Binding Monitor.RamPercent, Converter={StaticResource Frac}}" Thickness="11" Brush="{StaticResource Lilac}" Outline="{DynamicResource Ink}" />
+                        <TextBlock Text="&#xE950;" Style="{StaticResource Icon}" Foreground="{DynamicResource Ink}" />
                     </Grid>
                     <StackPanel Margin="16,0,0,0" VerticalAlignment="Center">
                         <TextBlock Text="MEMORY" Style="{StaticResource Caption}" />
-                        <TextBlock Text="{Binding Monitor.RamPercent, StringFormat={}{0:0}%}" Style="{StaticResource H2}" FontSize="22" />
+                        <TextBlock Text="{Binding Monitor.RamPercent, StringFormat={}{0:0}%}" Style="{StaticResource H2}" FontSize="24" FontWeight="Black" />
                         <TextBlock Text="{Binding Monitor.RamText}" Style="{StaticResource Sub}" FontSize="11.5" />
                     </StackPanel>
                 </DockPanel>
-            </Border>
-            <Border Style="{StaticResource Card}" Margin="6,0,3,0">
+            </c:Surface>
+            <c:Surface Style="{StaticResource StatCard}" Margin="8,0,4,4">
                 <DockPanel>
-                    <Grid Width="70" Height="70" DockPanel.Dock="Left">
-                        <c:RingGauge Value="{Binding DriveUsed}" Thickness="7" Brush="{StaticResource GradClean}" />
-                        <TextBlock Text="&#xEDA2;" Style="{StaticResource Icon}" Foreground="{StaticResource SubText}" />
+                    <Grid Width="68" Height="68" DockPanel.Dock="Left">
+                        <c:RingGauge Value="{Binding DriveUsed}" Thickness="11" Brush="{StaticResource Sky}" Outline="{DynamicResource Ink}" />
+                        <TextBlock Text="&#xEDA2;" Style="{StaticResource Icon}" Foreground="{DynamicResource Ink}" />
                     </Grid>
                     <StackPanel Margin="16,0,0,0" VerticalAlignment="Center">
                         <TextBlock Text="STORAGE" Style="{StaticResource Caption}" />
-                        <TextBlock Text="{Binding DriveUsed, StringFormat={}{0:P0}}" Style="{StaticResource H2}" FontSize="22" />
+                        <TextBlock Text="{Binding DriveUsed, StringFormat={}{0:P0}}" Style="{StaticResource H2}" FontSize="24" FontWeight="Black" />
                         <TextBlock Text="{Binding DriveText}" Style="{StaticResource Sub}" FontSize="11.5" ToolTip="{Binding DriveName}" />
                     </StackPanel>
                 </DockPanel>
-            </Border>
-            <Border Style="{StaticResource Card}" Margin="9,0,0,0">
+            </c:Surface>
+            <c:Surface Style="{StaticResource StatCard}" Margin="12,0,4,4" Background="{StaticResource Zest}">
                 <StackPanel VerticalAlignment="Center">
-                    <TextBlock Text="SYSTEM" Style="{StaticResource Caption}" />
-                    <TextBlock Text="{Binding MachineName}" Style="{StaticResource H2}" FontSize="17" Margin="0,2,0,0" TextTrimming="CharacterEllipsis" />
-                    <TextBlock Text="{Binding OsName}" Style="{StaticResource Sub}" FontSize="11.5" />
-                    <TextBlock Style="{StaticResource Sub}" FontSize="11.5" Text="{Binding Monitor.Uptime, StringFormat=Up {0}}" />
+                    <TextBlock Text="SYSTEM" Style="{StaticResource Caption}" Foreground="{DynamicResource OnFill}" Opacity="0.7" />
+                    <TextBlock Text="{Binding MachineName}" Style="{StaticResource H2}" Foreground="{DynamicResource OnFill}" FontSize="18" Margin="0,2,0,0" TextTrimming="CharacterEllipsis" />
+                    <TextBlock Text="{Binding OsName}" Style="{StaticResource Sub}" Foreground="{DynamicResource OnFill}" FontSize="11.5" />
+                    <TextBlock Style="{StaticResource Sub}" Foreground="{DynamicResource OnFill}" FontSize="11.5" Text="{Binding Monitor.Uptime, StringFormat=Up {0}}" />
                 </StackPanel>
-            </Border>
+            </c:Surface>
         </UniformGrid>
     </Grid>
 </UserControl>

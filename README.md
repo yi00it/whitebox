@@ -14,9 +14,22 @@ Clean junk, find what's eating your disk, tame startup apps and keep an eye on y
 
 [**⬇ Download the latest version**](https://github.com/yi00it/whitebox/releases/latest)
 
-<img src="docs/screenshots/home.png" alt="Smart Care" width="860" />
+<img src="docs/screenshots/home.png" alt="Smart Care (light)" width="860" />
 
 </div>
+
+## Status
+
+**Current version: 1.1.0** — runs on Windows 10 and 11 (x64).
+
+What's new in 1.1:
+
+- **Brand-new look** — a bolder, friendlier design with crisp "printed card" surfaces and bundled Fraunces + Inter typefaces.
+- **Light and dark mode** — follows your Windows app theme on first run; flip it any time with the sun/moon button in the title bar. Your choice is remembered.
+- **Refreshed Smart Care home** with live CPU, memory, storage and system tiles.
+- New high-resolution app icon.
+
+Every feature listed below is implemented. Builds are not code-signed yet (see the SmartScreen note under Download).
 
 ## Features
 
@@ -38,8 +51,11 @@ Clean junk, find what's eating your disk, tame startup apps and keep an eye on y
 <td><img src="docs/screenshots/space.png" alt="Space Lens" /></td>
 </tr>
 <tr>
-<td><img src="docs/screenshots/performance.png" alt="Performance" /></td>
-<td><img src="docs/screenshots/tools.png" alt="Toolkit" /></td>
+<td><img src="docs/screenshots/performance.png" alt="Performance (dark)" /></td>
+<td><img src="docs/screenshots/tools.png" alt="Toolkit (dark)" /></td>
+</tr>
+<tr>
+<td colspan="2" align="center"><img src="docs/screenshots/home-dark.png" alt="Smart Care (dark)" width="560" /></td>
 </tr>
 </table>
 
@@ -89,21 +105,22 @@ dotnet publish -c Release -r win-x64 --self-contained true -p:PublishSingleFile=
 ### Project layout
 
 ```
-Core/        MVVM helpers, converters, formatting, P/Invoke
-Controls/    RingGauge, Sparkline, TreeMap, Spinner, PageHeader (custom-drawn)
+Core/        MVVM helpers, converters, formatting, P/Invoke, ThemeManager (light/dark)
+Controls/    RingGauge, Sparkline, TreeMap, Spinner, PageHeader, Surface, OutlineText (custom-drawn)
 Services/    JunkEngine, FileScanner, SpaceAnalyzer, ProcessService, StartupService, AppsService, SystemMonitor
 ViewModels/  One per page
 Views/       XAML pages
-Themes/      Theme.xaml: palette, gradients and all control styles
+Themes/      Light.xaml / Dark.xaml palettes; Theme.xaml: gradients and all control styles
+Assets/      App icon and bundled fonts (Fraunces, Inter — SIL Open Font License)
 ```
 
 ### Developer switches
 
 ```
-Whitebox.exe --page <home|cleanup|large|dupes|space|performance|startup|apps|tools> [--scan <ms>] [--demo] --shot out.png
+Whitebox.exe --page <home|cleanup|large|dupes|space|performance|startup|apps|tools> [--scan <ms>] [--demo] [--theme light|dark] --shot out.png
 ```
 
-Opens a page, optionally runs its scan, renders the window to a PNG and exits. `--demo` swaps in placeholder user and machine names, which is how the screenshots above are made.
+Opens a page, optionally runs its scan, renders the window to a PNG and exits. `--demo` swaps in placeholder user and machine names and `--theme` forces a palette, which is how the screenshots above are made.
 
 ## Contributing
 
@@ -112,3 +129,5 @@ Bug reports, ideas and pull requests are welcome. See [CONTRIBUTING.md](CONTRIBU
 ## License
 
 [MIT](LICENSE) © 2026 Yigit Ozdamar
+
+Bundled fonts [Fraunces](Assets/Fonts/Fraunces-OFL.txt) and [Inter](Assets/Fonts/Inter-OFL.txt) are licensed under the SIL Open Font License 1.1.

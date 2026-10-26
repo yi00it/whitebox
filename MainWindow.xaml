@@ -4,7 +4,7 @@
         xmlns:c="clr-namespace:Whitebox.Controls"
         Title="Whitebox" Width="1320" Height="860" MinWidth="1100" MinHeight="700"
         WindowStartupLocation="CenterScreen"
-        Background="{StaticResource Bg}" Foreground="{StaticResource Text}"
+        Background="{DynamicResource Bg}" Foreground="{DynamicResource Text}"
         FontFamily="{StaticResource UiFont}" UseLayoutRounding="True"
         TextOptions.TextFormattingMode="Ideal">
     <WindowChrome.WindowChrome>
@@ -17,29 +17,24 @@
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
-        <!-- ambient glow behind content -->
-        <Ellipse Grid.Column="1" Width="900" Height="600" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,-380,-300,0"
-                 IsHitTestVisible="False" Opacity="0.10">
-            <Ellipse.Fill>
-                <RadialGradientBrush>
-                    <GradientStop Color="#8B6CFF" Offset="0" />
-                    <GradientStop Color="#008B6CFF" Offset="1" />
-                </RadialGradientBrush>
-            </Ellipse.Fill>
-        </Ellipse>
-
         <!-- ================= Sidebar ================= -->
-        <Border Background="{StaticResource Sidebar}" BorderBrush="{StaticResource Stroke}" BorderThickness="0,0,1,0">
+        <Border Background="{DynamicResource Sidebar}" BorderBrush="{DynamicResource Ink}" BorderThickness="0,0,1.5,0">
             <DockPanel Margin="16,16,16,16">
-                <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="6,2,0,18">
-                    <Grid Width="36" Height="36">
-                        <Border CornerRadius="11" Background="{StaticResource AccentGradient}" />
-                        <Border CornerRadius="11" Margin="9" Background="White" Opacity="0.95" />
-                        <Border CornerRadius="4" Margin="14" Background="{StaticResource AccentGradient}" />
+                <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="4,4,0,20">
+                    <!-- badge: the white box -->
+                    <Grid Width="44" Height="44">
+                        <Ellipse Fill="{StaticResource Zest}" Stroke="{DynamicResource Ink}" StrokeThickness="1.5" />
+                        <Viewbox Margin="10,9,10,10">
+                            <Canvas Width="26" Height="28">
+                                <Path Data="M13,1 L25,8 L13,15 L1,8 Z" Fill="White" Stroke="{DynamicResource OnFill}" StrokeThickness="1.6" StrokeLineJoin="Round" />
+                                <Path Data="M1,8 L13,15 L13,27 L1,20 Z" Fill="#F4F2FA" Stroke="{DynamicResource OnFill}" StrokeThickness="1.6" StrokeLineJoin="Round" />
+                                <Path Data="M13,15 L25,8 L25,20 L13,27 Z" Fill="#E4E0F1" Stroke="{DynamicResource OnFill}" StrokeThickness="1.6" StrokeLineJoin="Round" />
+                            </Canvas>
+                        </Viewbox>
                     </Grid>
                     <StackPanel Margin="12,0,0,0" VerticalAlignment="Center">
-                        <TextBlock Text="Whitebox" FontFamily="{StaticResource DisplayFont}" FontSize="18" FontWeight="SemiBold" />
-                        <TextBlock Text="Clean · Optimize · Protect" FontSize="11" Foreground="{StaticResource Muted}" />
+                        <TextBlock Text="Whitebox" FontFamily="{StaticResource DisplayFont}" FontSize="23" FontWeight="Black" />
+                        <TextBlock Text="Clean · Optimize · Protect" FontSize="11" Foreground="{DynamicResource SubText}" Margin="1,-2,0,0" />
                     </StackPanel>
                 </StackPanel>
 
@@ -47,21 +42,22 @@
                 <DockPanel DockPanel.Dock="Bottom" Margin="6,12,4,0">
                     <Button DockPanel.Dock="Right" Style="{StaticResource LinkButton}" Content="GitHub" Padding="4,0" FontSize="11.5"
                             Click="Project_Click" ToolTip="Source code, releases and issue tracker" />
-                    <TextBlock x:Name="VersionText" FontSize="11.5" Foreground="{StaticResource Muted}" VerticalAlignment="Center" />
+                    <TextBlock x:Name="VersionText" FontSize="11.5" Foreground="{DynamicResource Muted}" VerticalAlignment="Center" />
                 </DockPanel>
 
                 <!-- footer: admin state -->
-                <Border DockPanel.Dock="Bottom" Background="#141826" CornerRadius="12" Padding="14,12" BorderBrush="{StaticResource Stroke}" BorderThickness="1">
+                <c:Surface DockPanel.Dock="Bottom" Background="{DynamicResource CardBrush}" CornerRadius="16" Padding="14,12" BorderBrush="{DynamicResource Ink}" BorderThickness="1.5"
+                           ShadowBrush="{DynamicResource Ink}" ShadowOffset="4" Margin="0,0,4,4">
                     <StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock x:Name="AdminGlyph" Text="&#xEA18;" Style="{StaticResource Icon}" FontSize="14" />
                             <TextBlock x:Name="AdminText" Margin="10,0,0,0" FontSize="12.5" FontWeight="SemiBold" VerticalAlignment="Center" />
                         </StackPanel>
-                        <TextBlock x:Name="AdminSub" FontSize="11.5" Foreground="{StaticResource SubText}" TextWrapping="Wrap" Margin="0,4,0,0" />
+                        <TextBlock x:Name="AdminSub" FontSize="11.5" Foreground="{DynamicResource SubText}" TextWrapping="Wrap" Margin="0,4,0,0" />
                         <Button x:Name="AdminButton" Style="{StaticResource PrimaryButton}" Content="Restart as admin" Margin="0,10,0,0"
-                                Padding="0,7" FontSize="12.5" Click="AdminButton_Click" />
+                                Padding="0,7" FontSize="12.5" HorizontalContentAlignment="Center" Click="AdminButton_Click" />
                     </StackPanel>
-                </Border>
+                </c:Surface>
 
                 <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="0,0,0,12">
                     <StackPanel x:Name="NavPanel">
@@ -92,6 +88,7 @@
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top" WindowChrome.IsHitTestVisibleInChrome="True">
+                <Button x:Name="ThemeButton" Style="{StaticResource CaptionButton}" FontSize="13" Click="Theme_Click" />
                 <Button Style="{StaticResource CaptionButton}" Content="&#xE921;" Click="Minimize_Click" />
                 <Button x:Name="MaxButton" Style="{StaticResource CaptionButton}" Content="&#xE922;" Click="Maximize_Click" />
                 <Button Style="{StaticResource CloseCaptionButton}" Content="&#xE8BB;" Click="Close_Click" />
@@ -103,27 +100,24 @@
         <StackPanel x:Name="ToastHost" Grid.ColumnSpan="2" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,28,28" Width="360" />
 
         <!-- ================= Dialog ================= -->
-        <Grid x:Name="Overlay" Grid.ColumnSpan="2" Visibility="Collapsed" Background="#B3060709">
-            <Border x:Name="DialogCard" Width="460" Background="#161B28" CornerRadius="18" BorderBrush="{StaticResource StrokeStrong}" BorderThickness="1"
-                    Padding="28,26" HorizontalAlignment="Center" VerticalAlignment="Center" RenderTransformOrigin="0.5,0.5">
-                <Border.RenderTransform>
+        <Grid x:Name="Overlay" Grid.ColumnSpan="2" Visibility="Collapsed" Background="{DynamicResource Scrim}">
+            <c:Surface x:Name="DialogCard" Width="460" Style="{StaticResource Card}" CornerRadius="22" ShadowOffset="8" Margin="0"
+                       Padding="28,26" HorizontalAlignment="Center" VerticalAlignment="Center" RenderTransformOrigin="0.5,0.5">
+                <c:Surface.RenderTransform>
                     <ScaleTransform x:Name="DialogScale" />
-                </Border.RenderTransform>
-                <Border.Effect>
-                    <DropShadowEffect BlurRadius="50" ShadowDepth="10" Opacity="0.5" Color="Black" />
-                </Border.Effect>
+                </c:Surface.RenderTransform>
                 <StackPanel>
-                    <Border x:Name="DialogIcon" Width="48" Height="48" CornerRadius="14" HorizontalAlignment="Left" Background="{StaticResource AccentGradient}">
-                        <TextBlock x:Name="DialogGlyph" Text="&#xE946;" Style="{StaticResource Icon}" FontSize="20" Foreground="White" />
-                    </Border>
-                    <TextBlock x:Name="DialogTitle" Style="{StaticResource H2}" FontSize="19" Margin="0,18,0,8" TextWrapping="Wrap" />
+                    <c:Surface x:Name="DialogIcon" Style="{StaticResource Tile}" Width="50" Height="50" CornerRadius="14" HorizontalAlignment="Left" Background="{StaticResource Zest}">
+                        <TextBlock x:Name="DialogGlyph" Text="&#xE946;" Style="{StaticResource Icon}" FontSize="20" />
+                    </c:Surface>
+                    <TextBlock x:Name="DialogTitle" Style="{StaticResource H2}" FontSize="23" Margin="0,18,0,8" TextWrapping="Wrap" />
                     <TextBlock x:Name="DialogMessage" Style="{StaticResource Sub}" FontSize="13.5" TextWrapping="Wrap" TextTrimming="None" LineHeight="20" />
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,26,0,0">
                         <Button x:Name="DialogCancel" Style="{StaticResource GhostButton}" Content="Cancel" IsCancel="True" />
                         <Button x:Name="DialogOk" Style="{StaticResource PrimaryButton}" Margin="10,0,0,0" IsDefault="True" />
                     </StackPanel>
                 </StackPanel>
-            </Border>
+            </c:Surface>
         </Grid>
     </Grid>
 </Window>

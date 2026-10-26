@@ -1,0 +1,35 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!-- Dark palette: midnight paper, moonlight ink. Pastel fills stay the same; text on them uses OnFill. -->
+    <SolidColorBrush x:Key="Ink" Color="#EEEBFF" />
+    <SolidColorBrush x:Key="OnInk" Color="#0E0D1A" />
+    <SolidColorBrush x:Key="OnFill" Color="#1E1A3C" />
+    <SolidColorBrush x:Key="Shadow" Color="#3A3570" />
+    <SolidColorBrush x:Key="Paper" Color="#0E0D1A" />
+    <SolidColorBrush x:Key="Bg" Color="#0E0D1A" />
+    <SolidColorBrush x:Key="Sidebar" Color="#12101F" />
+    <SolidColorBrush x:Key="CardBrush" Color="#181628" />
+    <SolidColorBrush x:Key="CardAlt" Color="#13111F" />
+    <SolidColorBrush x:Key="CardHover" Color="#221F37" />
+    <SolidColorBrush x:Key="Selected" Color="#2E2915" />
+    <SolidColorBrush x:Key="Stroke" Color="#EEEBFF" />
+    <SolidColorBrush x:Key="StrokeStrong" Color="#EEEBFF" />
+    <SolidColorBrush x:Key="Hairline" Color="#2A2742" />
+    <SolidColorBrush x:Key="Text" Color="#EEEBFF" />
+    <SolidColorBrush x:Key="SubText" Color="#B5B0D4" />
+    <SolidColorBrush x:Key="Muted" Color="#8681A8" />
+    <SolidColorBrush x:Key="Accent2" Color="#4FD69C" />
+    <SolidColorBrush x:Key="Success" Color="#4FD69C" />
+    <SolidColorBrush x:Key="Warning" Color="#FFB547" />
+    <SolidColorBrush x:Key="Danger" Color="#FF6B63" />
+    <SolidColorBrush x:Key="TrackBrush" Color="#24213A" />
+    <SolidColorBrush x:Key="NavHover" Color="#1D1A2F" />
+    <SolidColorBrush x:Key="CaptionHover" Color="#221F37" />
+    <SolidColorBrush x:Key="CheckHover" Color="#24213A" />
+    <SolidColorBrush x:Key="FocusFill" Color="#1D1A2F" />
+    <SolidColorBrush x:Key="ThumbBrush" Color="#2E2B48" />
+    <SolidColorBrush x:Key="ThumbHover" Color="#4A4670" />
+    <SolidColorBrush x:Key="Swash" Color="#66FFCF33" />
+    <SolidColorBrush x:Key="Scrim" Color="#B3050409" />
+    <SolidColorBrush x:Key="HeroBlob" Color="#221F40" />
+</ResourceDictionary>

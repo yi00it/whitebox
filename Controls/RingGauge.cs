@@ -24,13 +24,19 @@ public sealed class RingGauge : FrameworkElement
 
     public static readonly DependencyProperty TrackBrushProperty = DependencyProperty.Register(
         nameof(TrackBrush), typeof(Brush), typeof(RingGauge),
-        new FrameworkPropertyMetadata(new SolidColorBrush(Color.FromRgb(0x22, 0x28, 0x38)),
+        new FrameworkPropertyMetadata(new SolidColorBrush(Color.FromRgb(0xE6, 0xE1, 0xF3)),
             FrameworkPropertyMetadataOptions.AffectsRender));
+
+    public static readonly DependencyProperty OutlineProperty = DependencyProperty.Register(
+        nameof(Outline), typeof(Brush), typeof(RingGauge),
+        new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.AffectsRender));
 
     public double Value { get => (double)GetValue(ValueProperty); set => SetValue(ValueProperty, value); }
     public double Thickness { get => (double)GetValue(ThicknessProperty); set => SetValue(ThicknessProperty, value); }
     public Brush Brush { get => (Brush)GetValue(BrushProperty); set => SetValue(BrushProperty, value); }
     public Brush TrackBrush { get => (Brush)GetValue(TrackBrushProperty); set => SetValue(TrackBrushProperty, value); }
+    /// <summary>Optional ink line drawn along both edges of the ring.</summary>
+    public Brush? Outline { get => (Brush?)GetValue(OutlineProperty); set => SetValue(OutlineProperty, value); }
 
     private static void OnValueChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
@@ -51,11 +57,23 @@ public sealed class RingGauge : FrameworkElement
         double r = (size - t) / 2;
         var center = new Point(ActualWidth / 2, ActualHeight / 2);
         dc.DrawEllipse(null, new Pen(TrackBrush, t), center, r, r);
+        DrawArc(dc, center, r, t);
 
+        if (Outline != null)
+        {
+            var edge = new Pen(Outline, 1.5);
+            dc.DrawEllipse(null, edge, center, r + t / 2, r + t / 2);
+            dc.DrawEllipse(null, edge, center, r - t / 2, r - t / 2);
+        }
+    }
+
+    private void DrawArc(DrawingContext dc, Point center, double r, double t)
+    {
         double v = (double)GetValue(DisplayValueProperty);
         if (v <= 0.002) return;
 
-        var pen = new Pen(Brush, t) { StartLineCap = PenLineCap.Round, EndLineCap = PenLineCap.Round };
+        var cap = Outline != null ? PenLineCap.Flat : PenLineCap.Round;
+        var pen = new Pen(Brush, t) { StartLineCap = cap, EndLineCap = cap };
         if (v >= 0.9995)
         {
             dc.DrawEllipse(null, pen, center, r, r);

@@ -87,20 +87,15 @@ public sealed class InitialConverter : IValueConverter
     public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture) => Binding.DoNothing;
 }
 
-/// <summary>Maps any string to one of a fixed set of pleasant gradients, stable per name.</summary>
+/// <summary>Maps any string to one of a fixed set of flat pastels, stable per name.</summary>
 public sealed class NameToBrushConverter : IValueConverter
 {
-    private static readonly (string, string)[] Pairs =
-    [
-        ("#8B6CFF", "#36C9FF"), ("#2FE0A5", "#21A0FF"), ("#FF8A4C", "#FF4F8B"), ("#FFC24B", "#FF7A45"),
-        ("#5B8CFF", "#9F6BFF"), ("#FF5C9A", "#B36BFF"), ("#22D3B6", "#2F86FF"), ("#F7B733", "#FC4A1A"),
-    ];
+    private static readonly string[] Pastels =
+        ["#FFCF33", "#8CC8FF", "#7EE2C2", "#FFB0D0", "#C9E58C", "#FF9B85", "#C2B0FF", "#7FD5E6"];
 
-    private static readonly Brush[] Brushes = Pairs.Select(p =>
+    private static readonly Brush[] Brushes = Pastels.Select(c =>
     {
-        var b = new LinearGradientBrush(
-            (Color)ColorConverter.ConvertFromString(p.Item1),
-            (Color)ColorConverter.ConvertFromString(p.Item2), 45);
+        var b = new SolidColorBrush((Color)ColorConverter.ConvertFromString(c));
         b.Freeze();
         return (Brush)b;
     }).ToArray();

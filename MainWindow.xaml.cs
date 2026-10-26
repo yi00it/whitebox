@@ -5,6 +5,7 @@ using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Threading;
+using Whitebox.Controls;
 using Whitebox.Core;
 using Whitebox.Services;
 using Whitebox.ViewModels;
@@ -20,6 +21,8 @@ public partial class MainWindow : Window
     {
         InitializeComponent();
         SourceInitialized += (_, _) => ApplyWindowStyle();
+        ThemeManager.Changed += OnThemeChanged;
+        UpdateThemeButton();
         StateChanged += (_, _) => OnStateChanged();
         Loaded += async (_, _) =>
         {
@@ -33,7 +36,7 @@ public partial class MainWindow : Window
 
         bool admin = AdminHelper.IsAdmin;
         AdminText.Text = admin ? "Administrator" : "Standard mode";
-        AdminGlyph.Foreground = (Brush)FindResource(admin ? "Success" : "Warning");
+        AdminGlyph.SetResourceReference(TextBlock.ForegroundProperty, admin ? "Success" : "Warning");
         AdminSub.Text = admin
             ? "Full access to system cleanup and repair tools."
             : "Some system areas need admin rights to clean.";
@@ -115,12 +118,51 @@ public partial class MainWindow : Window
     private void ApplyWindowStyle()
     {
         var hwnd = new WindowInteropHelper(this).Handle;
-        int dark = 1;
+        if (hwnd == IntPtr.Zero) return;
+        int dark = ThemeManager.IsDark ? 1 : 0;
         Native.DwmSetWindowAttribute(hwnd, 20, ref dark, sizeof(int));     // DWMWA_USE_IMMERSIVE_DARK_MODE
         int round = 2;
         Native.DwmSetWindowAttribute(hwnd, 33, ref round, sizeof(int));    // DWMWA_WINDOW_CORNER_PREFERENCE = round
-        int border = 0x003A2620;                                           // COLORREF (BGR) for #20263A
+        int border = ThemeManager.IsDark ? 0x0042272A : 0x003C1A1E;        // COLORREF (BGR): #2A2742 / #1E1A3C (ink)
         Native.DwmSetWindowAttribute(hwnd, 34, ref border, sizeof(int));   // DWMWA_BORDER_COLOR
+    }
+
+    // ---------------- theme ----------------
+
+    private void Theme_Click(object sender, RoutedEventArgs e)
+    {
+        // Freeze the current look into a snapshot, switch underneath it, then fade the snapshot away.
+        Image? snapshot = null;
+        if (RootGrid.ActualWidth > 0 && RootGrid.ActualHeight > 0)
+        {
+            var dpi = VisualTreeHelper.GetDpi(this);
+            var rtb = new System.Windows.Media.Imaging.RenderTargetBitmap(
+                (int)(RootGrid.ActualWidth * dpi.DpiScaleX), (int)(RootGrid.ActualHeight * dpi.DpiScaleY),
+                dpi.PixelsPerInchX, dpi.PixelsPerInchY, PixelFormats.Pbgra32);
+            rtb.Render(RootGrid);
+            snapshot = new Image { Source = rtb, Stretch = Stretch.Fill, IsHitTestVisible = false };
+            Grid.SetColumnSpan(snapshot, 2);
+            RootGrid.Children.Add(snapshot);
+        }
+
+        ThemeManager.Toggle();
+
+        if (snapshot == null) return;
+        var fade = new DoubleAnimation(1, 0, TimeSpan.FromMilliseconds(380)) { EasingFunction = new CubicEase { EasingMode = EasingMode.EaseInOut } };
+        fade.Completed += (_, _) => RootGrid.Children.Remove(snapshot);
+        snapshot.BeginAnimation(OpacityProperty, fade);
+    }
+
+    private void OnThemeChanged()
+    {
+        ApplyWindowStyle();
+        UpdateThemeButton();
+    }
+
+    private void UpdateThemeButton()
+    {
+        ThemeButton.Content = ThemeManager.IsDark ? "" : "";   // sun / moon
+        ThemeButton.ToolTip = ThemeManager.IsDark ? "Switch to light mode" : "Switch to dark mode";
     }
 
     private void OnStateChanged()
@@ -150,12 +192,13 @@ public partial class MainWindow : Window
             _ => ("", "AccentGradient"),
         };
 
-        var icon = new Border
+        var icon = new Surface
         {
+            Style = (Style)FindResource("Tile"),
             Width = 34, Height = 34, CornerRadius = new CornerRadius(10),
             Background = (Brush)FindResource(brushKey),
             VerticalAlignment = VerticalAlignment.Top,
-            Child = new TextBlock { Text = glyph, Style = (Style)FindResource("Icon"), Foreground = Brushes.White, FontSize = 15 },
+            Child = new TextBlock { Text = glyph, Style = (Style)FindResource("Icon"), FontSize = 15 },
         };
         var text = new StackPanel { Margin = new Thickness(12, 0, 0, 0) };
         text.Children.Add(new TextBlock { Text = title, Style = (Style)FindResource("H3") });
@@ -171,18 +214,15 @@ public partial class MainWindow : Window
         panel.Children.Add(icon);
         panel.Children.Add(text);
 
-        var toast = new Border
+        var toast = new Surface
         {
-            Background = new SolidColorBrush(Color.FromRgb(0x1A, 0x1F, 0x2E)),
-            BorderBrush = (Brush)FindResource("StrokeStrong"),
-            BorderThickness = new Thickness(1),
-            CornerRadius = new CornerRadius(14),
+            Style = (Style)FindResource("Card"),
+            CornerRadius = new CornerRadius(16),
             Padding = new Thickness(14, 12, 16, 12),
-            Margin = new Thickness(0, 10, 0, 0),
+            Margin = new Thickness(0, 10, 5, 5),
             Child = panel,
             Opacity = 0,
             RenderTransform = new TranslateTransform(40, 0),
-            Effect = new System.Windows.Media.Effects.DropShadowEffect { BlurRadius = 30, ShadowDepth = 6, Opacity = 0.45, Color = Colors.Black },
         };
         toast.MouseLeftButtonUp += (_, _) => RemoveToast(toast);
 
