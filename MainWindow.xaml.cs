@@ -16,6 +16,7 @@ namespace Whitebox;
 public partial class MainWindow : Window
 {
     private readonly Dictionary<string, FrameworkElement> _pages = [];
+    private UpdateInfo? _update;
 
     public MainWindow()
     {
@@ -28,6 +29,7 @@ public partial class MainWindow : Window
         {
             Navigate(App.StartPage ?? "home");
             if (App.ScreenshotPath != null) await DevScreenshotAsync(App.ScreenshotPath);
+            else StartUpdateChecks();
         };
 
         Notifier.Raised += ShowToast;
@@ -45,6 +47,71 @@ public partial class MainWindow : Window
     }
 
     private void Project_Click(object sender, RoutedEventArgs e) => Shell.Open(App.ProjectUrl);
+
+    // ---------------- updates ----------------
+
+    /// <summary>Checks now and then every hour; <see cref="UpdateService"/> only goes online once a day.</summary>
+    private void StartUpdateChecks()
+    {
+        var timer = new DispatcherTimer { Interval = TimeSpan.FromHours(1) };
+        timer.Tick += async (_, _) => await CheckForUpdateAsync();
+        timer.Start();
+        _ = CheckForUpdateAsync();
+    }
+
+    private async Task CheckForUpdateAsync()
+    {
+        if (_update != null) return;   // already on offer
+        var update = await UpdateService.CheckIfDueAsync();
+        if (update == null) return;
+
+        _update = update;
+        var version = update.Version.ToString(update.Version.Build >= 0 ? 3 : 2);
+        UpdateSub.Text = UpdateService.IsInstalled
+            ? $"Whitebox {version} is ready to install. It takes a few seconds and reopens the app."
+            : $"Whitebox {version} is available. Download the installer to get automatic updates.";
+        UpdateNowButton.Content = UpdateService.IsInstalled ? "Update" : "Download";
+        UpdateCard.Visibility = Visibility.Visible;
+        Notifier.Show("Update available", $"Whitebox {version} is out.");
+    }
+
+    private async void UpdateNow_Click(object sender, RoutedEventArgs e)
+    {
+        if (_update == null) return;
+        if (!UpdateService.IsInstalled)
+        {
+            Shell.Open(_update.PageUrl);
+            return;
+        }
+
+        UpdateButtons.Visibility = Visibility.Collapsed;
+        UpdateProgress.Value = 0;
+        UpdateProgress.Visibility = Visibility.Visible;
+        UpdateSub.Text = "Downloading the update…";
+        try
+        {
+            await UpdateService.InstallAsync(_update, new Progress<double>(p => UpdateProgress.Value = p));
+        }
+        catch (Exception ex)
+        {
+            Notifier.Show("Update failed", ex.Message, ToastKind.Error);
+            UpdateSub.Text = "The update couldn't be installed. You can try again.";
+            UpdateProgress.Visibility = Visibility.Collapsed;
+            UpdateButtons.Visibility = Visibility.Visible;
+        }
+    }
+
+    private void UpdateLater_Click(object sender, RoutedEventArgs e)
+    {
+        UpdateService.Snooze();
+        _update = null;
+        UpdateCard.Visibility = Visibility.Collapsed;
+    }
+
+    private void UpdateNotes_Click(object sender, RoutedEventArgs e)
+    {
+        if (_update != null) Shell.Open(_update.PageUrl);
+    }
 
     // ---------------- navigation ----------------
 

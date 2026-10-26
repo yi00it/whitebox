@@ -62,14 +62,23 @@ Every feature listed below is implemented. Builds are not code-signed yet (see t
 ## Download & install
 
 1. Go to the [latest release](https://github.com/yi00it/whitebox/releases/latest).
-2. Download **`Whitebox-x.y.z-win-x64-setup.exe`** to install Whitebox like any other app: it adds a Start menu entry and shows up in **Installed apps**, where you can uninstall it. No admin rights needed.
-   - Prefer a portable app? Grab **`Whitebox-x.y.z-win-x64.exe`** instead. It's a single file with nothing to install, and it runs on any 64-bit Windows 10 or 11 PC.
-   - Already have the [.NET 10 Desktop Runtime](https://dotnet.microsoft.com/download/dotnet/10.0)? Grab the much smaller `…-requires-dotnet10.zip` instead.
-3. Double-click to run.
+2. Download **`Whitebox-x.y.z-win-x64-setup.exe`**.
+3. Run it. Whitebox installs for your account (no admin rights needed), adds itself to the Start menu and shows up in **Settings → Apps → Installed apps**, where you can uninstall it.
+
+It runs on any 64-bit Windows 10 or 11 PC; nothing else needs to be installed.
 
 > **"Windows protected your PC"?** Whitebox isn't code-signed yet, so SmartScreen warns about new downloads.
 > Click **More info → Run anyway**. You can check the file with the `SHA256SUMS.txt` published with every release,
 > or build it yourself from source (below).
+
+### Updates
+
+Whitebox checks GitHub for a new version once a day. When one is out, an **Update available** card appears in the sidebar:
+
+- **Update** downloads the new installer, verifies it against the release's `SHA256SUMS.txt`, installs it and reopens Whitebox. It takes a few seconds.
+- **Later** hides the card until the next day's check.
+
+Nothing is installed without your OK.
 
 Whitebox runs without admin rights. A few system areas (Windows Update cache, system logs, all-users startup items) are marked **Admin**; use **Restart as admin** in the sidebar to unlock them.
 
@@ -82,7 +91,7 @@ Whitebox is built to be conservative:
 - Files that are in use are skipped. An app's cache is skipped entirely while that app is running.
 - Large files, duplicates and Space Lens items go to the **Recycle Bin**, so you can restore them.
 - Every action that removes something asks you to confirm first.
-- No telemetry, no accounts, no network calls. Everything runs locally.
+- No telemetry, no accounts. Everything runs locally. The only network call is the daily update check, which asks GitHub for the latest release and sends nothing about you or your PC.
 
 Whitebox is provided as-is under the MIT license, with no warranty. Review what's selected before you clean.
 
@@ -96,27 +105,20 @@ cd whitebox
 dotnet run
 ```
 
-Release build (single file):
-
-```powershell
-dotnet publish -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true `
-  -p:IncludeNativeLibrariesForSelfExtract=true -p:EnableCompressionInSingleFile=true -o publish
-```
-
-Installer (needs [Inno Setup 6](https://jrsoftware.org/isinfo.php), e.g. `winget install JRSoftware.InnoSetup`):
+Release build: the installer, the same file that's published on GitHub (needs [Inno Setup 6](https://jrsoftware.org/isinfo.php), e.g. `winget install JRSoftware.InnoSetup`):
 
 ```powershell
 .\installer\build.ps1
 ```
 
-This writes `dist\Whitebox-x.y.z-win-x64-setup.exe`.
+This writes `dist\Whitebox-x.y.z-win-x64-setup.exe`. Pushing a `v*` tag builds it on GitHub Actions and publishes it as a release, which installed copies then pick up as an update.
 
 ### Project layout
 
 ```
 Core/        MVVM helpers, converters, formatting, P/Invoke, ThemeManager (light/dark)
 Controls/    RingGauge, Sparkline, TreeMap, Spinner, PageHeader, Surface, OutlineText (custom-drawn)
-Services/    JunkEngine, FileScanner, SpaceAnalyzer, ProcessService, StartupService, AppsService, SystemMonitor
+Services/    JunkEngine, FileScanner, SpaceAnalyzer, ProcessService, StartupService, AppsService, SystemMonitor, UpdateService
 ViewModels/  One per page
 Views/       XAML pages
 Themes/      Light.xaml / Dark.xaml palettes; Theme.xaml: gradients and all control styles

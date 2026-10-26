@@ -54,3 +54,11 @@ Name: "{autodesktop}\{#AppName}"; Filename: "{app}\{#AppExe}"; Tasks: desktopico
 
 [Run]
 Filename: "{app}\{#AppExe}"; Description: "{cm:LaunchProgram,{#AppName}}"; Flags: nowait postinstall skipifsilent
+; In-app updates run setup silently with /UPDATE=1; reopen Whitebox afterwards.
+Filename: "{app}\{#AppExe}"; Flags: nowait; Check: IsInAppUpdate
+
+[Code]
+function IsInAppUpdate: Boolean;
+begin
+  Result := ExpandConstant('{param:UPDATE|0}') = '1';
+end;

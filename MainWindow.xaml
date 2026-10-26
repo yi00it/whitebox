@@ -59,6 +59,33 @@
                     </StackPanel>
                 </c:Surface>
 
+                <!-- footer: update available (shown by the daily update check) -->
+                <c:Surface x:Name="UpdateCard" DockPanel.Dock="Bottom" Visibility="Collapsed" Background="{DynamicResource CardBrush}" CornerRadius="16" Padding="14,12"
+                           BorderBrush="{DynamicResource Ink}" BorderThickness="1.5" ShadowBrush="{DynamicResource Ink}" ShadowOffset="4" Margin="0,0,4,14">
+                    <StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Grid Width="24" Height="24">
+                                <Ellipse Fill="{StaticResource Zest}" Stroke="{DynamicResource Ink}" StrokeThickness="1.5" />
+                                <TextBlock Text="&#xE896;" Style="{StaticResource Icon}" FontSize="11" Foreground="{DynamicResource OnFill}" />
+                            </Grid>
+                            <TextBlock Text="Update available" Margin="10,0,0,0" FontSize="12.5" FontWeight="SemiBold" VerticalAlignment="Center" />
+                        </StackPanel>
+                        <TextBlock x:Name="UpdateSub" FontSize="11.5" Foreground="{DynamicResource SubText}" TextWrapping="Wrap" Margin="0,6,0,0" />
+                        <Button x:Name="UpdateNotes" Style="{StaticResource LinkButton}" Content="What's new" FontSize="11.5" Padding="0" Margin="0,4,0,0"
+                                HorizontalAlignment="Left" Click="UpdateNotes_Click" />
+                        <ProgressBar x:Name="UpdateProgress" Style="{StaticResource SlimProgress}" Maximum="1" Margin="0,10,0,0" Visibility="Collapsed" />
+                        <Grid x:Name="UpdateButtons" Margin="0,10,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="8" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Button Style="{StaticResource GhostButton}" Content="Later" Padding="0,7" FontSize="12.5" HorizontalContentAlignment="Center" Click="UpdateLater_Click" />
+                            <Button x:Name="UpdateNowButton" Grid.Column="2" Style="{StaticResource PrimaryButton}" Content="Update" Padding="0,7" FontSize="12.5" HorizontalContentAlignment="Center" Click="UpdateNow_Click" />
+                        </Grid>
+                    </StackPanel>
+                </c:Surface>
+
                 <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="0,0,0,12">
                     <StackPanel x:Name="NavPanel">
                         <RadioButton Style="{StaticResource NavButton}" c:UiProps.Glyph="&#xE945;" Content="Smart Care" Tag="home" Checked="Nav_Checked" />
