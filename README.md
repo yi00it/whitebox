@@ -20,7 +20,7 @@ Clean junk, find what's eating your disk, tame startup apps and keep an eye on y
 
 ## Status
 
-**Current version: 1.0.0** — runs on Windows 10 and 11 (x64).
+**Current version: 1.0.1** — runs on Windows 10 and 11 (x64).
 
 Highlights:
 

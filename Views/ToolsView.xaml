@@ -22,47 +22,55 @@
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <c:Surface Style="{StaticResource Card}" Margin="0,0,14,14" Padding="18">
-                            <DockPanel>
-                                <DockPanel DockPanel.Dock="Top">
-                                    <c:Surface Style="{StaticResource Tile}" Width="42" Height="42" CornerRadius="12" Background="{Binding Title, Converter={StaticResource NameBrush}}">
-                                        <TextBlock Text="{Binding Glyph}" Style="{StaticResource Icon}" FontSize="18" Foreground="{DynamicResource OnFill}" />
-                                    </c:Surface>
-                                    <Border DockPanel.Dock="Right" Style="{StaticResource Chip}" Background="{StaticResource Lilac}" VerticalAlignment="Top"
-                                            Visibility="{Binding NeedsAdmin, Converter={StaticResource BoolToVis}}">
-                                        <TextBlock Text="Admin" FontSize="10.5" FontWeight="Bold" />
-                                    </Border>
-                                    <Border />
-                                </DockPanel>
-                                <TextBlock DockPanel.Dock="Top" Text="{Binding Title}" Style="{StaticResource H3}" FontSize="14.5" Margin="0,14,0,4" />
-                                <TextBlock DockPanel.Dock="Top" Text="{Binding Description}" Style="{StaticResource Sub}" TextWrapping="Wrap" Height="36" />
-                                <DockPanel DockPanel.Dock="Bottom" Margin="0,12,0,0">
-                                    <Button DockPanel.Dock="Left" Style="{StaticResource GhostButton}" Content="{Binding ActionText}" Command="{Binding Command}" Padding="16,7" FontSize="12.5" />
-                                    <c:Spinner Width="16" Height="16" Thickness="2" Brush="{DynamicResource Ink}" Margin="12,0,0,0"
+                        <!-- compact row: icon · title, description and status · action -->
+                        <c:Surface Style="{StaticResource Card}" Margin="0,0,14,14" Padding="14,12">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <c:Surface Style="{StaticResource Tile}" Width="36" Height="36" CornerRadius="10" VerticalAlignment="Top"
+                                           Background="{Binding Title, Converter={StaticResource NameBrush}}">
+                                    <TextBlock Text="{Binding Glyph}" Style="{StaticResource Icon}" FontSize="15" Foreground="{DynamicResource OnFill}" />
+                                </c:Surface>
+                                <StackPanel Grid.Column="1" Margin="12,0,12,0">
+                                    <TextBlock Text="{Binding Title}" Style="{StaticResource H3}" FontSize="14" TextTrimming="CharacterEllipsis" ToolTip="{Binding Title}" />
+                                    <TextBlock Text="{Binding Description}" Style="{StaticResource Sub}" FontSize="12" TextWrapping="Wrap" TextTrimming="CharacterEllipsis"
+                                               Height="32" Margin="0,3,0,0" ToolTip="{Binding Description}" />
+                                    <DockPanel Height="20" Margin="0,2,0,0">
+                                        <Border DockPanel.Dock="Left" Style="{StaticResource Chip}" Background="{StaticResource Lilac}" Margin="0,0,8,0" VerticalAlignment="Center"
+                                                Visibility="{Binding NeedsAdmin, Converter={StaticResource BoolToVis}}">
+                                            <TextBlock Text="Admin" FontSize="10" FontWeight="Bold" Foreground="{DynamicResource OnFill}" />
+                                        </Border>
+                                        <TextBlock Text="{Binding Status}" Style="{StaticResource Sub}" FontSize="11.5" Foreground="{DynamicResource Success}"
+                                                   VerticalAlignment="Center" TextTrimming="CharacterEllipsis" ToolTip="{Binding Status}" />
+                                    </DockPanel>
+                                </StackPanel>
+                                <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+                                    <c:Spinner Width="16" Height="16" Thickness="2" Brush="{DynamicResource Ink}" Margin="0,0,10,0"
                                                Visibility="{Binding IsBusy, Converter={StaticResource BoolToVis}}" />
-                                    <TextBlock Text="{Binding Status}" Style="{StaticResource Sub}" FontSize="12" Foreground="{DynamicResource Success}"
-                                               VerticalAlignment="Center" Margin="12,0,0,0" TextTrimming="CharacterEllipsis" />
-                                </DockPanel>
-                                <Border />
-                            </DockPanel>
+                                    <Button Style="{StaticResource GhostButton}" Content="{Binding ActionText}" Command="{Binding Command}" Padding="14,6" FontSize="12" />
+                                </StackPanel>
+                            </Grid>
                         </c:Surface>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
 
             <!-- Power plans -->
-            <c:Surface Style="{StaticResource Card}" Margin="0,4,14,0">
+            <c:Surface Style="{StaticResource Card}" Margin="0,0,14,0" Padding="14,12">
                 <StackPanel>
                     <DockPanel>
-                        <c:Surface Style="{StaticResource Tile}" Width="42" Height="42" CornerRadius="12" Background="{StaticResource GradStartup}">
-                            <TextBlock Text="&#xE945;" Style="{StaticResource Icon}" FontSize="18" Foreground="{DynamicResource OnFill}" />
+                        <c:Surface Style="{StaticResource Tile}" Width="36" Height="36" CornerRadius="10" Background="{StaticResource GradStartup}">
+                            <TextBlock Text="&#xE945;" Style="{StaticResource Icon}" FontSize="15" Foreground="{DynamicResource OnFill}" />
                         </c:Surface>
-                        <StackPanel Margin="14,0,0,0" VerticalAlignment="Center">
-                            <TextBlock Text="Power plan" Style="{StaticResource H3}" FontSize="14.5" />
-                            <TextBlock Text="High performance keeps the CPU ready at full speed; Balanced saves energy." Style="{StaticResource Sub}" />
+                        <StackPanel Margin="12,0,0,0" VerticalAlignment="Center">
+                            <TextBlock Text="Power plan" Style="{StaticResource H3}" FontSize="14" />
+                            <TextBlock Text="High performance keeps the CPU ready at full speed; Balanced saves energy." Style="{StaticResource Sub}" FontSize="12" />
                         </StackPanel>
                     </DockPanel>
-                    <ItemsControl ItemsSource="{Binding Plans}" Margin="0,16,0,0">
+                    <ItemsControl ItemsSource="{Binding Plans}" Margin="0,12,0,0">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
                                 <WrapPanel />
@@ -77,6 +85,7 @@
                                             <Style.Triggers>
                                                 <DataTrigger Binding="{Binding IsActive}" Value="True">
                                                     <Setter Property="Background" Value="{StaticResource GradStartup}" />
+                                                    <Setter Property="Foreground" Value="{DynamicResource OnFill}" />
                                                 </DataTrigger>
                                             </Style.Triggers>
                                         </Style>
