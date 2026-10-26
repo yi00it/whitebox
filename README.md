@@ -1,0 +1,114 @@
+<div align="center">
+
+<img src="Assets/whitebox.ico" width="72" alt="Whitebox logo" />
+
+# Whitebox
+
+**A free, open-source cleaner and performance toolkit for Windows.**
+Clean junk, find what's eating your disk, tame startup apps and keep an eye on your PC — in one fast, native app.
+
+[![CI](https://github.com/yi00it/whitebox/actions/workflows/ci.yml/badge.svg)](https://github.com/yi00it/whitebox/actions/workflows/ci.yml)
+[![Latest release](https://img.shields.io/github/v/release/yi00it/whitebox)](https://github.com/yi00it/whitebox/releases/latest)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+![Windows 10 | 11](https://img.shields.io/badge/Windows-10%20%7C%2011-0078D4)
+
+[**⬇ Download the latest version**](https://github.com/yi00it/whitebox/releases/latest)
+
+<img src="docs/screenshots/home.png" alt="Smart Care" width="860" />
+
+</div>
+
+## Features
+
+| | |
+|---|---|
+| **Smart Care** | One click to scan, then clean junk and free up memory. Live CPU, memory, disk and system tiles. |
+| **System Junk** | ~30 locations: temp files, Windows Update and Delivery Optimization caches, error reports, crash dumps, shader caches, Recycle Bin, browser caches (Chrome, Edge, Brave, Vivaldi, Opera, Firefox), app caches (Discord, VS Code, Slack, Teams, Spotify, Steam), developer caches (npm, Yarn, pip, NuGet) and privacy traces. |
+| **Large Files** | Scans a whole drive in parallel; filter by videos, disk images, installers, archives… |
+| **Duplicates** | Finds byte-for-byte identical files, verified with SHA-256. Auto-select keeps the oldest copy. |
+| **Space Lens** | Interactive map of your drive — every folder sized by the space it takes. Click to dive in. |
+| **Performance** | Live CPU, memory and network charts, process list, end task, free up memory. |
+| **Startup Apps** | Turn apps that launch at sign-in on or off (the same switch Task Manager uses). |
+| **Uninstaller** | Every installed app with icon, size and date; removes leftover folders afterwards. |
+| **Toolkit** | Flush DNS, empty Recycle Bin, restart Explorer, refresh icon cache, create a restore point, SFC, DISM, power plans. |
+
+<table>
+<tr>
+<td><img src="docs/screenshots/cleanup.png" alt="System Junk" /></td>
+<td><img src="docs/screenshots/space.png" alt="Space Lens" /></td>
+</tr>
+<tr>
+<td><img src="docs/screenshots/performance.png" alt="Performance" /></td>
+<td><img src="docs/screenshots/tools.png" alt="Toolkit" /></td>
+</tr>
+</table>
+
+## Download & install
+
+1. Go to the [latest release](https://github.com/yi00it/whitebox/releases/latest).
+2. Download **`Whitebox-x.y.z-win-x64.exe`**. It's a single file with nothing to install, and it runs on any 64-bit Windows 10 or 11 PC.
+   - Already have the [.NET 10 Desktop Runtime](https://dotnet.microsoft.com/download/dotnet/10.0)? Grab the much smaller `…-requires-dotnet10.zip` instead.
+3. Double-click to run.
+
+> **"Windows protected your PC"?** Whitebox isn't code-signed yet, so SmartScreen warns about new downloads.
+> Click **More info → Run anyway**. You can check the file with the `SHA256SUMS.txt` published with every release,
+> or build it yourself from source (below).
+
+Whitebox runs without admin rights. A few system areas (Windows Update cache, system logs, all-users startup items) are marked **Admin**; use **Restart as admin** in the sidebar to unlock them.
+
+## Is it safe?
+
+Whitebox is built to be conservative:
+
+- Browser **history, cookies and saved passwords are never touched** — only caches that browsers rebuild themselves.
+- Temp files changed in the last 2 hours are left alone, so running installers don't break.
+- Files that are in use are skipped. An app's cache is skipped entirely while that app is running.
+- Large files, duplicates and Space Lens items go to the **Recycle Bin**, so you can restore them.
+- Every action that removes something asks you to confirm first.
+- No telemetry, no accounts, no network calls. Everything runs locally.
+
+Whitebox is provided as-is under the MIT license, with no warranty. Review what's selected before you clean.
+
+## Build from source
+
+Requires the [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0).
+
+```powershell
+git clone https://github.com/yi00it/whitebox.git
+cd whitebox
+dotnet run
+```
+
+Release build (single file):
+
+```powershell
+dotnet publish -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true `
+  -p:IncludeNativeLibrariesForSelfExtract=true -p:EnableCompressionInSingleFile=true -o publish
+```
+
+### Project layout
+
+```
+Core/        MVVM helpers, converters, formatting, P/Invoke
+Controls/    RingGauge, Sparkline, TreeMap, Spinner, PageHeader (custom-drawn)
+Services/    JunkEngine, FileScanner, SpaceAnalyzer, ProcessService, StartupService, AppsService, SystemMonitor
+ViewModels/  One per page
+Views/       XAML pages
+Themes/      Theme.xaml: palette, gradients and all control styles
+```
+
+### Developer switches
+
+```
+Whitebox.exe --page <home|cleanup|large|dupes|space|performance|startup|apps|tools> [--scan <ms>] [--demo] --shot out.png
+```
+
+Opens a page, optionally runs its scan, renders the window to a PNG and exits. `--demo` swaps in placeholder user and machine names, which is how the screenshots above are made.
+
+## Contributing
+
+Bug reports, ideas and pull requests are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md).
+
+## License
+
+[MIT](LICENSE) © 2026 Yigit Ozdamar

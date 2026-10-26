@@ -1,0 +1,44 @@
+name: Release
+
+# Push a tag like v1.2.0 to build and publish a GitHub Release with downloadable binaries.
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Publish
+        shell: pwsh
+        run: |
+          $version = "${{ github.ref_name }}".TrimStart('v')
+          $common = @('-c', 'Release', '-r', 'win-x64', "-p:Version=$version",
+                      '-p:PublishSingleFile=true', '-p:IncludeNativeLibrariesForSelfExtract=true')
+
+          # Standalone: runs on any Windows 10/11 x64 PC, no .NET install needed.
+          dotnet publish Whitebox.csproj @common --self-contained true -p:EnableCompressionInSingleFile=true -o out/standalone
+          # Small: needs the .NET 10 Desktop Runtime.
+          dotnet publish Whitebox.csproj @common --self-contained false -p:PublishReadyToRun=true -o out/small
+
+          New-Item -ItemType Directory dist | Out-Null
+          Copy-Item out/standalone/Whitebox.exe "dist/Whitebox-$version-win-x64.exe"
+          Compress-Archive out/small/Whitebox.exe "dist/Whitebox-$version-win-x64-requires-dotnet10.zip"
+          Get-ChildItem dist | ForEach-Object {
+            $hash = (Get-FileHash $_.FullName -Algorithm SHA256).Hash.ToLower()
+            "$hash  $($_.Name)" | Add-Content dist/SHA256SUMS.txt
+          }
+
+      - name: Create release
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "${{ github.ref_name }}" dist/* --title "Whitebox ${{ github.ref_name }}" --generate-notes

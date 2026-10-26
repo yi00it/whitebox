@@ -1,0 +1,99 @@
+<UserControl x:Class="Whitebox.Views.ToolsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:c="clr-namespace:Whitebox.Controls">
+    <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="0,0,6,0">
+        <StackPanel Margin="36,4,30,28">
+            <c:PageHeader Title="Toolkit" Subtitle="One-click maintenance and repair tools." Glyph="&#xE90F;" Accent="{StaticResource GradTools}">
+                <Button Style="{StaticResource GhostButton}" Command="{Binding RestartAdminCommand}"
+                        Visibility="{Binding IsAdmin, Converter={StaticResource InvBoolToVis}}">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="&#xEA18;" Style="{StaticResource Icon}" FontSize="13" Foreground="{StaticResource Warning}" />
+                        <TextBlock Text="Restart as administrator" Margin="8,0,0,0" />
+                    </StackPanel>
+                </Button>
+            </c:PageHeader>
+
+            <ItemsControl ItemsSource="{Binding Tools}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <UniformGrid Columns="3" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border Style="{StaticResource Card}" Margin="0,0,14,14" Padding="18">
+                            <DockPanel>
+                                <DockPanel DockPanel.Dock="Top">
+                                    <Border Width="42" Height="42" CornerRadius="12" Background="{StaticResource GradTools}">
+                                        <TextBlock Text="{Binding Glyph}" Style="{StaticResource Icon}" FontSize="18" Foreground="White" />
+                                    </Border>
+                                    <Border DockPanel.Dock="Right" Style="{StaticResource Chip}" Background="#2A2340" VerticalAlignment="Top"
+                                            Visibility="{Binding NeedsAdmin, Converter={StaticResource BoolToVis}}">
+                                        <TextBlock Text="Admin" FontSize="10.5" FontWeight="SemiBold" Foreground="#B9A6FF" />
+                                    </Border>
+                                    <Border />
+                                </DockPanel>
+                                <TextBlock DockPanel.Dock="Top" Text="{Binding Title}" Style="{StaticResource H3}" FontSize="14.5" Margin="0,14,0,4" />
+                                <TextBlock DockPanel.Dock="Top" Text="{Binding Description}" Style="{StaticResource Sub}" TextWrapping="Wrap" Height="36" />
+                                <DockPanel DockPanel.Dock="Bottom" Margin="0,12,0,0">
+                                    <Button DockPanel.Dock="Left" Style="{StaticResource GhostButton}" Content="{Binding ActionText}" Command="{Binding Command}" Padding="16,7" FontSize="12.5" />
+                                    <c:Spinner Width="16" Height="16" Thickness="2" Brush="{StaticResource Accent2}" Margin="12,0,0,0"
+                                               Visibility="{Binding IsBusy, Converter={StaticResource BoolToVis}}" />
+                                    <TextBlock Text="{Binding Status}" Style="{StaticResource Sub}" FontSize="12" Foreground="{StaticResource Success}"
+                                               VerticalAlignment="Center" Margin="12,0,0,0" TextTrimming="CharacterEllipsis" />
+                                </DockPanel>
+                                <Border />
+                            </DockPanel>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+            <!-- Power plans -->
+            <Border Style="{StaticResource Card}" Margin="0,4,14,0">
+                <StackPanel>
+                    <DockPanel>
+                        <Border Width="42" Height="42" CornerRadius="12" Background="{StaticResource GradStartup}">
+                            <TextBlock Text="&#xE945;" Style="{StaticResource Icon}" FontSize="18" Foreground="White" />
+                        </Border>
+                        <StackPanel Margin="14,0,0,0" VerticalAlignment="Center">
+                            <TextBlock Text="Power plan" Style="{StaticResource H3}" FontSize="14.5" />
+                            <TextBlock Text="High performance keeps the CPU ready at full speed; Balanced saves energy." Style="{StaticResource Sub}" />
+                        </StackPanel>
+                    </DockPanel>
+                    <ItemsControl ItemsSource="{Binding Plans}" Margin="0,16,0,0">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Button Command="{Binding DataContext.ActivatePlanCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                        CommandParameter="{Binding}" Margin="0,0,10,0">
+                                    <Button.Style>
+                                        <Style TargetType="Button" BasedOn="{StaticResource GhostButton}">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsActive}" Value="True">
+                                                    <Setter Property="Background" Value="{StaticResource GradStartup}" />
+                                                    <Setter Property="BorderThickness" Value="0" />
+                                                    <Setter Property="Foreground" Value="White" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Button.Style>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="&#xE73E;" Style="{StaticResource Icon}" FontSize="12"
+                                                   Visibility="{Binding IsActive, Converter={StaticResource BoolToVis}}" Margin="0,0,8,0" />
+                                        <TextBlock Text="{Binding Name}" />
+                                    </StackPanel>
+                                </Button>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>
