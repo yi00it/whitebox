@@ -5,10 +5,7 @@ body:
   - type: textarea
     id: idea
     attributes:
-      label: What would you like Whitebox to do?
+      label: What would you like?
+      description: Describe the feature and the problem it solves. For a new cleanup location, include the folder path and what app creates it.
     validations:
       required: true
-  - type: textarea
-    id: why
-    attributes:
-      label: Why is it useful?
